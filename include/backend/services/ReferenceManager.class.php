@@ -246,6 +246,7 @@ class ReferenceManager extends Manager
     $doc_id = intval($doc_id);
     $plus = $moins = $this->getCriterionList();
     foreach($plus as $cri => $entries)
+    {
       $classement = array_keys($this->getEntriesListByDoc($cri, $doc_id));
       $plus[$cri] = isset($crit[$cri]) ? array_diff($crit[$cri], $classement) : array();
       $moins[$cri] = isset($crit[$cri]) ? array_diff($classement, $crit[$cri]) : array();

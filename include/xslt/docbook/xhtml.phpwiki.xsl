@@ -29,6 +29,7 @@
     <xsl:message terminate="no">Attention : l'en-tête du fichier est totalement incomplet !</xsl:message>
     <pubdate>1970-01-01</pubdate>
     <date>1970-01-01</date>
+    <author><firstname>John</firstname><surname>Doe</surname></author>
   </articleinfo>
 </xsl:template>
 

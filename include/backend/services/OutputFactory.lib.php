@@ -27,6 +27,9 @@ $outputInfos = array(
   ),
   'xhtml' => array(
     'docbook' => array('file' => 'docbook.xml', 'description' => 'XML/Docbook')
+  ),
+  'phpwiki' => array(
+    'docbook' => array('file' => 'docbook.xml', 'description' => 'XML/Docbook')
   )
 );
 
@@ -117,6 +120,17 @@ function _output_xhtml_to_docbook($src, $dest)
   return _output_xsl_generic_transform($src,
     $dest === null ? $outputInfos['xhtml']['docbook']['file'] : $dest,
     "docbook/xhtml.openweb.xsl");
+}
+
+/**
+ * @access private
+ */
+function _output_phpwiki_to_docbook($src, $dest)
+{
+  global $outputInfos;
+  return _output_xsl_generic_transform($src,
+    $dest === null ? $outputInfos['xhtml']['docbook']['file'] : $dest,
+    "docbook/xhtml.phpwiki.xsl");
 }
 
 ?>

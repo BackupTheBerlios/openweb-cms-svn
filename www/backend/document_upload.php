@@ -28,6 +28,7 @@ if(empty($_POST['action']))
 <ul>
   <li><label><input type="radio" name="format" checked="checked" value="docbook" /> format Docbook </label></li>
   <li><label><input type="radio" name="format" value="xhtml" /> format Xhtml</label></li>
+  <li><label><input type="radio" name="format" value="phpwiki" /> format XHTML de PhpWiki</label></li>
 </ul>
 <p><label>Document : <input type="file" name="xmlart" /></label><br />
 <input type="submit" name="action" value="Envoyer" /></p>
