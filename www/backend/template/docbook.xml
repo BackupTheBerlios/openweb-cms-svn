@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="iso-8859-15"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+          "http://openweb.eu.org/dtd/docbkx412/docbookx.dtd">
+<article lang="fr" id="template2">
+  <articleinfo>
+    <!-- Toutes les méta-données se trouvent ici, leur ordre d'apparition
+         n'a aucune importance sauf pour ceux qui reliront la source ;) -->
+    <title>Titre de votre document</title>
+    <!-- une balise <author> par auteur -->
+    <author>
+      <firstname>Prénom</firstname>
+      <lastname>Nom</lastname>
+      <email>moi@maison.tld</email>
+    </author>
+    <author>
+      <firstname>Autre prénom</firstname>
+      <lastname>Autre nom</lastname>
+    </author>
+
+    <!-- toutes les dates sont au format AAAA-MM-JJ -->
+    <pubdate>2002-10-20</pubdate> <!-- date de première publication -->
+    <date>2003-02-10</date> <!-- date de modification, s'il y en a une -->
+
+    <abstract> <!-- Chapeau -->
+      <para>
+Une phrase ou deux d'introduction/résumé pour le cadre « En bref ».
+      </para>
+    </abstract>
+
+    <!-- Ici le classement de l'articles dans les différentes rubriques,
+         rayez les mentions inutiles :-) -->
+    <subjectset>
+      <subject role="profil">
+        <subjectterm>debutant</subjectterm>
+        <subjectterm>decideur</subjectterm>
+        <subjectterm>expert</subjectterm>
+        <subjectterm>gourou</subjectterm>
+      </subject>
+      <subject role="technologie">
+        <subjectterm>xhtml</subjectterm>
+        <subjectterm>css</subjectterm>
+        <subjectterm>dom</subjectterm>
+        <subjectterm>png</subjectterm>
+      </subject>
+      <subject role="theme">
+        <subjectterm>structure</subjectterm>
+        <subjectterm>mise_en_page</subjectterm>
+        <subjectterm>pages_dynamiques</subjectterm>
+        <subjectterm>accessibilite</subjectterm>
+        <subjectterm>etude_cas</subjectterm>
+        <subjectterm>navigateurs</subjectterm>
+        <subjectterm>multimedia</subjectterm>
+      </subject>
+    </subjectset>
+
+    <!-- La licence, avec au passage un exemple de lien -->
+    <legalnotice>
+      <para>Cet article est sous licence <ulink url="http://creativecommons.org/licenses/by-sa/1.0/legalcode">Creative Commons Attribution-ShareAlike</ulink>.</para>
+    </legalnotice> 
+
+  </articleinfo>
+
+  <!-- Ici le contenu véritable commence -->
+
+  <para>Petit paragraphe d'introduction</para>
+
+  <section> <!-- Section de premier niveau -->
+    <title>Titre de ma première section</title>
+
+    <para>Blabla</para>
+    <para>...</para>
+
+    <section> <!-- Hop ! Une sous-section : 2è niveau -->
+      <title>Blah</title>
+
+      <section> <!-- 3è niveau : même si la DTD ne limite pas le nombre de
+                     niveaux, nous serons assez raisonnables pour ne pas
+                     dépasser le 3è pallier :) -->
+        <title>Descendons encore d'un niveau</title>
+        <para>Au ras des pâquerettes</para>
+      </section>
+
+      <section>
+        <title>Toujours au 3è niveau</title>
+      </section>
+
+    </section>
+
+  </section>
+
+  <section>
+    <title>Deuxième partie</title>
+    <para>Dans cette partie nous allons réaliser plusieurs prouesses
+technologiques modernes... En effet nous aurons le droit à :</para>
+
+    <orderedlist>
+      <listitem><para>une liste ordonnée (attention, le paragraphe
+autour de ce texte n'est pas facultatif) ;</para></listitem>
+
+      <listitem><para>la présence de l'acronyme <acronym>HTML</acronym> ;</para></listitem>
+
+      <listitem><para>l'insertion dans le texte d'une balise <acronym>(X)HTML</acronym> : <sgmltag>&lt;body&gt;</sgmltag> ;</para></listitem>
+
+      <listitem><para>un <emphasis>texte important</emphasis>, voire <emphasis role="strong">très important</emphasis> ;</para></listitem>
+
+      <listitem><para>to be continued.</para></listitem>
+
+    </orderedlist>
+
+  </section>
+</article>

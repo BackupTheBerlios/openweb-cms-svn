@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<criteres>
+  <critere name="profil" libelle="Profil">
+  <classements>
+    <entry><name>debutant</name><libelle>Débutants</libelle><location></location></entry>
+    <entry><name>decideur</name><libelle>Décideurs</libelle><location></location></entry>
+  </classements>
+</critere>
+  <critere name="technologie" libelle="Technologie">
+  <classements>
+    <entry><name>xhtml</name><libelle>Le XHTML</libelle><location></location></entry>
+    <entry><name>css</name><libelle>Les feuilles de style en cascade</libelle><location></location></entry>
+    <entry><name>dom</name><libelle>Le Document Object Model</libelle><location></location></entry>
+  </classements>
+</critere>
+  <critere name="theme" libelle="Thème">
+  <classements>
+  </classements>
+</critere>
+</criteres>
