@@ -1,20 +1,20 @@
 <?php
 /**
- * Génération des différents formats de sorties d'un document
+ * GÃ©nÃ©ration des diffÃ©rents formats de sorties d'un document
  * @package Backend
  * @subpackage Services
  * @author Florian Hatat
- * @copyright Copyright © 2003 OpenWeb.eu.org
+ * @copyright Copyright Â© 2003 OpenWeb.eu.org
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License
  */
 
 /**
  * Transformations disponibles.
- * Ce tableau associatif décrit toutes les transformations possibles. Il
- * s'organise sous la forme de trois tableaux associatifs imbriqués.
- * Chaque clef de ce tableau (1) définit le format d'entrée du document, et
+ * Ce tableau associatif dÃ©crit toutes les transformations possibles. Il
+ * s'organise sous la forme de trois tableaux associatifs imbriquÃ©s.
+ * Chaque clef de ce tableau (1) dÃ©finit le format d'entrÃ©e du document, et
  * la valeur est un tableau (2).
- * Les clefs du tableau (2) désignent le nom du format de sortie demandé,
+ * Les clefs du tableau (2) dÃ©signent le nom du format de sortie demandÃ©,
  * et les valeurs sont des tableaux (3).
  * Les tableaux (3) ont la structure suivante : la clef <code>file</code> indique le nom du fichier de sortie, <code>description</code> la description du format de sortie.
  * <code>$outputInfos['docbook']['xhtml']['file']</code> donne ainsi le nom du fichier obtenu en transformant du DocBook en XML.
@@ -31,11 +31,11 @@ $outputInfos = array(
 );
 
 /**
- * Génération de la sortie du document dans un format donné
+ * GÃ©nÃ©ration de la sortie du document dans un format donnÃ©
  * @param string $src fichier source du document
  * @param string $informat format de la source
  * @param string $outformat format de sortie attendu
- * @return boolean vrai si tout s'est bien passé
+ * @return boolean vrai si tout s'est bien passÃ©
  * @uses $outputInfos
  */
 function outputMake($src, $informat, $outformat)
@@ -57,20 +57,20 @@ function outputMake($src, $informat, $outformat)
 }
 
 /**
- * Transformation générique d'un document XML via XSLT
+ * Transformation gÃ©nÃ©rique d'un document XML via XSLT
  * @param string $filename nom du fichier source
  * @param string $filename_source nom du fichier en sortie
  * @param string $stylesheet nom de la feuille XSLT
- * @param array $params paramètres à passer à la feuille XSLT
+ * @param array $params paramÃ¨tres Ã  passer Ã  la feuille XSLT
  * @access private
  * @return boolean vrai quand tout se passe bien
  */
 function _output_xsl_generic_transform($filename, $filename_cible, $stylesheet, $params = array())
 {
   /* Attention : code hautement toxique, il a fallu aller fouiller
-     dans les sources de PHP pour découvrir une grande partie des engins
-     nucléaires en jeu ici et rien ne garantit leur stabilité. Désolé pour
-     le développement durable, c'est pas trop ça ici. */
+     dans les sources de PHP pour dÃ©couvrir une grande partie des engins
+     nuclÃ©aires en jeu ici et rien ne garantit leur stabilitÃ©. DÃ©solÃ© pour
+     le dÃ©veloppement durable, c'est pas trop Ã§a ici. */
   $xh = xslt_create();
   $result = xslt_process($xh, $filename, PATH_INCLUDE."xslt/".$stylesheet,
                $filename_cible, array(), $params);

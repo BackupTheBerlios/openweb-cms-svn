@@ -52,9 +52,12 @@ Templates mangeurs d'attributs
 
 <!-- 7. The global structure of an HTML document -->
 
+<xsl:template match="*" mode="entete" priority="-10"/>
+
 <xsl:template match="html:html">
 	<article>
 		<xsl:call-template name="default.attrs"/>
+		<xsl:apply-templates select="html:head/html:meta" mode="entete"/>
 		<xsl:apply-templates select="html:body/@class"/>
 		<xsl:apply-templates select="html:body/html:h1"/>
 		<xsl:apply-templates/>
@@ -217,7 +220,8 @@ Templates mangeurs d'attributs
 	</abbrev>
 </xsl:template>
 
-<xsl:template match="html:acronym[@title][not(preceding::html:acronym[text()=current()/text()])]" mode="glossaire">
+<!-- <xsl:template match="html:acronym[@title][not(preceding::html:acronym[text()=current()/text()])]" mode="glossaire"> -->
+<xsl:template match="html:acronym[@title]" mode="glossaire">
 	<glossentry>
 		<xsl:call-template name="default.attrs"/>
 		<glossterm><xsl:value-of select="@title"/></glossterm>
@@ -225,9 +229,11 @@ Templates mangeurs d'attributs
 		<glossdef><xsl:apply-templates/></glossdef>
 	</glossentry>
 </xsl:template>
+
 <xsl:template match="html:acronym" mode="glossaire"/>
 
-<xsl:template match="html:abbr[@title][not(preceding::html:abbr[text()=current()/text()])]" mode="glossaire">
+<!-- <xsl:template match="html:abbr[@title][not(preceding::html:abbr[text()=current()/text()])]" mode="glossaire"> -->
+<xsl:template match="html:abbr[@title]" mode="glossaire">
 	<glossentry>
 		<xsl:call-template name="default.attrs"/>
 		<glossterm><xsl:value-of select="@title"/></glossterm>

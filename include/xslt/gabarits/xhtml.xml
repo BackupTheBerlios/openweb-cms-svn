@@ -98,7 +98,7 @@ xmlns:tpl="http://openweb.eu.org/tpl">
             confidentialité</a></li>
           <li><a href="/openwebgroup/licence/">Conditions de
             réutilisation</a></li>
-	  <li class="dernier"><a href="/openwebgroup/contribution">Proposer vos contributions</a></li>
+	  <li class="dernier"><a href="/openwebgroup/contribution/">Proposer vos contributions</a></li>
         </ul>
         <p>Page valide <a href="http://validator.w3.org/check/referer"
         title="Vérifier la validité de cette page">XHTML 1 Strict</a>, 

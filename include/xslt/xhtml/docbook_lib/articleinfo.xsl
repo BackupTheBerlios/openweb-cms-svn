@@ -120,7 +120,11 @@ Auteur du document
 ===========================================================
 -->
 <xsl:template match="articleinfo/author">
-  <xsl:variable name="nom" select="concat(firstname, ' ', surname)"/>
+  <xsl:variable name="nom">
+     <xsl:apply-templates select="firstname"/>
+     <xsl:text> </xsl:text>
+     <span class="patronyme"><xsl:apply-templates select="surname"/></span>
+  </xsl:variable>
   <li>
     <strong>Auteur&#160;:</strong><xsl:text> </xsl:text>
     <xsl:choose>
@@ -130,7 +134,7 @@ Auteur du document
 	</xsl:apply-templates>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="$nom"/>
+        <xsl:copy-of select="$nom"/>
       </xsl:otherwise>
     </xsl:choose>
   </li>
@@ -145,7 +149,7 @@ Email de l'auteur
 	<xsl:param name="texte" select="text()"/>
 	<a>
 		<xsl:attribute name="href">mailto:<xsl:call-template name="email.antispam"/></xsl:attribute>
-		<xsl:value-of select="$texte"/>
+		<xsl:copy-of select="$texte"/>
 	</a>
 </xsl:template>
 

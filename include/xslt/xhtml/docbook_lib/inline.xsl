@@ -104,11 +104,11 @@ exclude-result-prefixes="tpl">
 	</q>
 </xsl:template>
 
+<!-- TODO: attribut @hreflang -->
 <xsl:template match="ulink">
 	<a href="{@url}">
 	    	<xsl:call-template name="output.attrs"/>
 		<xsl:apply-templates/>
-	<!-- TODO: attribut @hreflang -->
 	</a>
 </xsl:template>
 

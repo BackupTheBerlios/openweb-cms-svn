@@ -53,12 +53,10 @@ FIN;
 
 function html_footer()
 {
-  $res = "</div>\n<div class=\"aide\"><p>Aide</p><div>";
-  $aide = PATH_WWW_BACKEND.'aide/'.OW_BACKEND_ACTION;
-  if(is_readable($aide))
-    $res .= file_get_contents($aide);
-  else
-    $res .= "<p>Aucune aide pour <code>".OW_BACKEND_ACTION."</code>.</p>";
+  $res = "</div>\n";
+  $aide = 'aide/'.OW_BACKEND_ACTION.'.html';
+  if(is_readable(PATH_WWW_BACKEND.$aide))
+    $res .= '<p id="aide"><a href="'.$aide.'">Aide</a></p>';
   return $res."</div>\n</div>\n</body>\n</html>\n";
 }
 

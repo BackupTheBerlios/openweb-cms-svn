@@ -42,7 +42,7 @@ else
 <?php
 OW_liste_document(array('type' => 'H'), 1, 'Humeur&#8230;');
 ?>
-    <p><a href="/humeurs/">Toutes les humeurs</a></p>
+    <p class="tous"><a href="/humeurs/">Toutes les humeurs</a></p>
   </div>
   <!-- Fin Humeur -->
 
@@ -53,9 +53,9 @@ OW_liste_document(array('type' => 'H'), 1, 'Humeur&#8230;');
 <div id="actualite">
   <h2>Actualité</h2>
 <?php
-require_once('actualite/inc/prepend.php');
+require_once('dotclear/inc/prepend.php');
 $con = new connection($dbuser, $dbpass, $dbhost, $dbbase);
-$blog = new blog($con, DB_PREFIX, NULL, dc_encoding);
+$blog = new blog($con, DB_PREFIX, 1, dc_encoding);
 $news = $blog->getLastNews(3, 'actualite');
 
 if($news->isEmpty())
@@ -65,13 +65,13 @@ else
   {
     echo '  <h3>', $news->f('post_titre'), "</h3>\n";
     echo '  <h4>', strftime('%x', strtotime($news->f('post_dt'))), "</h4>\n";
-    echo '  <p>', $news->f('post_content'), "</p>\n\n";
+    echo '  ', $news->f('post_content'), "\n\n";
     $news->moveNext();
   }
 
 $con->close();
 ?>
-  <p><a href="/actualite/">Toutes les actualités</a></p>
+  <p class="tous"><a href="/actualite/">Toutes les actualités</a></p>
 </div>
 <!-- Fin Actualité -->
 
@@ -80,7 +80,7 @@ $con->close();
 <?php
 OW_liste_document(array('type' => 'A'), 3, 'Derniers articles&#8230;');
 ?>
-  <p><a href="/articles/">Tous les articles</a></p>
+  <p class="tous"><a href="/articles/">Tous les articles</a></p>
 </div>
 <!-- Fin Derniers Articles -->
 

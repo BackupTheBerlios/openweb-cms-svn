@@ -5,11 +5,11 @@
  * @subpackage Presentation
  * @author Laurent Jouanneau
  * @author Florian Hatat
- * @copyright Copyright © 2003 OpenWeb.eu.org
+ * @copyright Copyright Â© 2003 OpenWeb.eu.org
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License
  */
 
-define('OW_SWITCHER_ACTIVATE', true);
+@define('OW_SWITCHER_ACTIVATE', true);
 
 // liste des styles disponibles
 $OW_styles = array('original' => 'Normal',
@@ -20,7 +20,7 @@ $OW_styles = array('original' => 'Normal',
 
 $OW_style_default = 'original';
 
-// on teste s'il y a un style de demandé..
+// on teste s'il y a un style de demandÃ©..
 
 if(OW_SWITCHER_ACTIVATE)
 {
@@ -64,7 +64,7 @@ function show_switcher()
 }
 
 /**
- * affiche la liste des balises link à afficher
+ * affiche la liste des balises link Ã  afficher
  */
 function stylesheet_list()
 {

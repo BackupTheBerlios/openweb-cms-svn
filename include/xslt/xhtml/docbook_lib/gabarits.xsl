@@ -77,7 +77,7 @@ OW_intro_liste_document("<xsl:value-of select="normalize-space($doc.content/arti
             editorial@openweb.eu.org
 	  </a>
 	</xsl:otherwise>
-      </xsl:choose>
+      </xsl:choose>.
     </p>
   </div>
 </xsl:template>

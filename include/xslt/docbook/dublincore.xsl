@@ -62,10 +62,12 @@
 	</subjectset>
 </xsl:template>
 
+<!-- TODO l'appel à contains() peut retourner un faux vrai si le nom d'un
+     classement possible est contenu dans le nom d'un autre classement -->
 <xsl:template match="critere">
 	<subject>
 		<xsl:apply-templates select="@name"/>
-		<xsl:apply-templates/>
+		<xsl:apply-templates select="classements/entry[contains($doc.content//html:meta[@name='DC.Subject']/@content, normalize-space(name[1]/text()))]"/>
 	</subject>
 </xsl:template>
 
@@ -73,9 +75,7 @@
 	<xsl:attribute name="role"><xsl:value-of select="."/></xsl:attribute>
 </xsl:template>
 
-<!-- TODO l'appel à contains() peut retourner un faux vrai si le nom d'un
-     classement possible est contenu dans le nom d'un autre classement -->
-<xsl:template match="entry[contains($doc.content//html:meta[@name='DC.Subject']/@content, normalize-space(name/text()))]">
+<xsl:template match="entry">
 	<subjectterm>
 		<xsl:choose>
 			<xsl:when test="location != ''">
@@ -89,8 +89,5 @@
 		</xsl:choose>
 	</subjectterm>
 </xsl:template>
-
-<!-- On ignore les entrées qui ne nous conviennent pas -->
-<xsl:template match="entry"/>
 
 </xsl:stylesheet>
