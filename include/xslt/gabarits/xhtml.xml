@@ -15,10 +15,6 @@ xmlns:tpl="http://openweb.eu.org/tpl">
 
     <link rel="author" title="Auteurs" href="/openwebgroup/membres/" />
     <link rel="copyright" title="Conditions de réutilisation" href="/openwebgroup/licence/" />
-    <!-- TODO mettre ces liens en relation avec les formats que le code
-         PHP prétend générer dans OutputFactory.lib.php -->
-    <link rel="alternate" title="Version Docbook/XML" type="text/xml" href="docbook.xml" />
-    <link rel="alternate" title="Version brute" type="text/html" href="xhtml.xml" />
     <link rel="start" title="Accueil" href="/" />
     <link rel="help" title="Politique d'accessibilité" href="/openwebgroup/demarche_accessibilite/" />
     <link rel="index" title="Carte" href="/openwebgroup/plan/" />
@@ -81,7 +77,13 @@ xmlns:tpl="http://openweb.eu.org/tpl">
           <!-- Fin Accueil -->
           <tpl:critere name="technologie" />
           <tpl:critere name="theme" />
-          <tpl:critere name="ressources" />
+          <div id="ressources">
+            <h2>Ressources</h2>
+            <ul>
+              <li><a href="/ressources/validation/">Outils</a></li>
+              <li><a href="/ressources/specifications/">Spécifications</a></li>
+            </ul>
+          </div>
         </div>
       </div>
       <!-- Fin Menus -->
@@ -100,7 +102,7 @@ xmlns:tpl="http://openweb.eu.org/tpl">
         </ul>
         <p>Page valide <a href="http://validator.w3.org/check/referer"
         title="Vérifier la validité de cette page">XHTML 1 Strict</a>, 
-        <a href="http://jigsaw.w3.org/css-validator/validator?uri=http://openweb.eu.org/style.css"
+        <a href="http://jigsaw.w3.org/css-validator/check/referer"
            title="Vérifier la validité de la feuille de styles">CSS2</a> et
         <a href="http://www.w3.org/WAI/WCAG1AA-Conformance"
         title="W3C Web accessibility initiative">accessible AA</a>.

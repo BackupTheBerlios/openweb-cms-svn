@@ -37,6 +37,10 @@ En tête du document
 <xsl:template match="tpl:head" mode="template">
   <head>
     <xsl:apply-templates mode="template"/>
+    <!-- TODO mettre ces liens en relation avec les formats que le code
+         PHP prétend générer dans OutputFactory.lib.php -->
+    <link rel="alternate" title="Version Docbook/XML" type="text/xml" href="docbook.xml" />
+    <link rel="alternate" title="Version brute" type="text/html" href="xhtml.xml" />
     <xsl:apply-templates select="$doc.content/article/articleinfo" mode="entete"/>
   </head>
 </xsl:template>

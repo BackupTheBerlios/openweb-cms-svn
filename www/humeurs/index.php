@@ -7,12 +7,12 @@ require_once(PATH_INC_FRONTEND.'front_xhtml.inc.php');
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
 <head>
-	<title>Articles</title>
+	<title>Humeurs</title>
 </head>
 <body>
 <!-- Début Texte -->
 <?php
-OW_liste_document(array('type' => 'A'), 200, "Tous les articles d'OpenWeb");
+OW_liste_document(array('type' => 'H'), 200, "Toutes les humeurs");
 ?>
 </body>
 </html>

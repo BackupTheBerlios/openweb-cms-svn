@@ -16,4 +16,7 @@ define('PATH_INC_FRONTEND', dirname(__FILE__).'/');
 define('PATH_INC_BASECLASS', PATH_INCLUDE.'baseclass/');
 error_reporting(E_ALL);
 
+setlocale(LC_TIME, 'fr_FR');
+setlocale(LC_MESSAGES, 'fr_FR');
+
 ?>

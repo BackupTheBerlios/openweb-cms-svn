@@ -39,6 +39,7 @@ En tête du document
 -->
 <xsl:template match="tpl:head" mode="template">
   <head>
+    <xsl:copy-of select="$doc.content//*[local-name()='head']/*[local-name()!='title']"/>
     <xsl:apply-templates mode="template"/>
   </head>
 </xsl:template>
@@ -47,7 +48,9 @@ En tête du document
 Titre du document
 ===========================================================
 -->
-<xsl:template match="tpl:title" mode="template">Accueil</xsl:template>
+<xsl:template match="tpl:title" mode="template">
+  <xsl:value-of select="$doc.content//*[local-name()='title']"/>
+</xsl:template>
 
 <!--
 ===========================================================
@@ -55,7 +58,9 @@ Contenu du document
 ===========================================================
 -->
 <xsl:template match="tpl:content" mode="template">
-<xsl:copy-of select="$doc.content"/>
+  <div id="texte">
+    <xsl:copy-of select="$doc.content//*[local-name()='body']/*"/>
+  </div>
 </xsl:template>
 
 <xsl:template match="tpl:style-switcher-links" mode="template">

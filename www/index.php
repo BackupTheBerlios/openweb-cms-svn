@@ -10,9 +10,6 @@ $rub = array();
 $fs->nbLineParPage = 1;
 $OW_presentation = $fs->getListPage(array('type' => 'openwebgroup', 'repertoire' => 'openwebgroup'), $rub);
 
-setlocale(LC_TIME, 'fr_FR');
-setlocale(LC_MESSAGES, 'fr_FR');
-
 ob_start();
 
 ?>
@@ -45,6 +42,7 @@ else
 <?php
 OW_liste_document(array('type' => 'H'), 1, 'Humeur&#8230;');
 ?>
+    <p><a href="/humeurs/">Toutes les humeurs</a></p>
   </div>
   <!-- Fin Humeur -->
 
@@ -54,22 +52,26 @@ OW_liste_document(array('type' => 'H'), 1, 'Humeur&#8230;');
 <!-- Début Actualité -->
 <div id="actualite">
   <h2>Actualité</h2>
-  <dl>
 <?php
 require_once('actualite/inc/prepend.php');
 $con = new connection($dbuser, $dbpass, $dbhost, $dbbase);
 $blog = new blog($con, DB_PREFIX, NULL, dc_encoding);
-$news = $blog->getLastNews(3);
-while(!$news->EOF())
-{
-  echo '  <dt>', $news->f('post_titre'), ' par ', $news->getUserCN(),
-       ', le ', strftime('%x', strtotime($news->f('post_dt'))), "</dt>\n";
-  echo '  <dd>', $news->f('post_content'), "</dd>";
-  $news->moveNext();
-}
+$news = $blog->getLastNews(3, 'actualite');
+
+if($news->isEmpty())
+  echo "  <p>Aucune actualité</p>\n";
+else
+  while(!$news->EOF())
+  {
+    echo '  <h3>', $news->f('post_titre'), "</h3>\n";
+    echo '  <h4>', strftime('%x', strtotime($news->f('post_dt'))), "</h4>\n";
+    echo '  <p>', $news->f('post_content'), "</p>\n\n";
+    $news->moveNext();
+  }
+
 $con->close();
 ?>
-  </dl>
+  <p><a href="/actualite/">Toutes les actualités</a></p>
 </div>
 <!-- Fin Actualité -->
 

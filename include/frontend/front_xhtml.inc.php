@@ -1,5 +1,7 @@
 <?php
 
+require_once(PATH_INC_FRONTEND.'switcher.inc.php');
+
 function front_xhtml_output()
 {
   $buf = ob_get_contents();
