@@ -9,9 +9,9 @@ exclude-result-prefixes="tpl">
 	<meta name="DC.Subject"><xsl:attribute name="content"><xsl:apply-templates select=".//subjectterm" mode="entete"/></xsl:attribute></meta>
 </xsl:template>
 
-<xsl:template match="subjectterm[position()=1]" mode="entete"><xsl:value-of select="normalize-space(text())"/></xsl:template>
+<xsl:template match="subjectterm[count(preceding-sibling::subjectterm)+count(../preceding-sibling::subject/subjectterm)=0]" mode="entete"><xsl:value-of select="normalize-space(text())"/></xsl:template>
 
-<xsl:template match="subjectterm[position()!=1]" mode="entete">, <xsl:value-of select="normalize-space(text())"/></xsl:template>
+<xsl:template match="subjectterm" mode="entete">, <xsl:value-of select="normalize-space(text())"/></xsl:template>
 
 <xsl:template match="subject[@role][count(subjectterm[normalize-space(text()) != normalize-space(/article/@id)]) != 0]">
 	<xsl:variable name="critere" select="$doc.criteres/criteres/critere[@name = current()/@role][@libelle]/@libelle"/>
