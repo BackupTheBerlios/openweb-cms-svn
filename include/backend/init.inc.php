@@ -4,8 +4,8 @@
  *
  * Ce fichier, inclus dans toutes les pages du backend, se charge de toute
  * l'initialisation de l'environnement du backend :
- *  - définition des chemins d'accès aux différents fichiers ;
- *  - connexion à la base de données ;
+ *  - dÃ©finition des chemins d'accÃ¨s aux diffÃ©rents fichiers ;
+ *  - connexion Ã  la base de donnÃ©es ;
  *  - identification et gestion des droits ;
  *  - gestion du gabarit de sortie XHTML.
  *
@@ -13,7 +13,7 @@
  * @subpackage Coordination
  * @author Laurent Jouanneau
  * @author Florian Hatat
- * @copyright Copyright © 2003 OpenWeb.eu.org
+ * @copyright Copyright Â© 2003 OpenWeb.eu.org
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License
  */
 
@@ -30,15 +30,15 @@ include(PATH_INCLUDE.'constantes.inc.php');
 
 error_reporting(E_ALL);
 
-// Inclusion des bibliothèques de PEAR
+// Inclusion des bibliothÃ¨ques de PEAR
 $pear_path = realpath(PATH_INC_BACKEND.'../../pear');
 ini_set('include_path', ini_get('include_path').':'.$pear_path);
-  // nécessaire pour PEAR sur le serveur d'OpenWeb
+  // nÃ©cessaire pour PEAR sur le serveur d'OpenWeb
 
 require_once "Auth/Auth.php";
 require_once "DB.php";
 
-// Paramètres pour la base de données
+// ParamÃ¨tres pour la base de donnÃ©es
 require_once(PATH_INCLUDE.'database.inc.php');
 $DSN = "mysql://$dbuser:$dbpass@$dbhost/$dbbase";
 
@@ -65,11 +65,11 @@ if(!$openwebAuth->getAuth())
   exit;
 }
 
-// Connexion à la base de données
+// Connexion Ã  la base de donnÃ©es
 $db = DB::Connect($DSN);
 $db->setFetchMode(DB_FETCHMODE_ASSOC);
 
-// Récuperation des données de l'utilisateur
+// RÃ©cuperation des donnÃ©es de l'utilisateur
 if(!isset($_SESSION['utilisateur']))
 {
   require_once(PATH_INC_BACKEND_SERVICE.'UserManager.class.php');
@@ -77,11 +77,11 @@ if(!isset($_SESSION['utilisateur']))
   if(($user = $um->getUserDatas($openwebAuth->username)) === null)
   {
     session_destroy();
-    echo 'Problème de lecture de vos données personnelles';
+    echo 'ProblÃ¨me de lecture de vos donnÃ©es personnelles';
     exit;
   }
 
-  // Vérifie si l'utilisateur est autorisé à se connecter
+  // VÃ©rifie si l'utilisateur est autorisÃ© Ã  se connecter
   if(intval($user['uti_valide']) == 0)
   {
     header('Location: logon.php?err=2');
@@ -95,14 +95,14 @@ if(!isset($_SESSION['utilisateur']))
 require_once(PATH_INC_BACKEND_SERVICE.'PermsManager.class.php');
 
 /**
- * Rôle de l'utilisateur dans le backend, définit les actions qu'il peut effectuer
+ * RÃ´le de l'utilisateur dans le backend, dÃ©finit les actions qu'il peut effectuer
  * @global object $pm
  */
 
 $pm = new PermsManager($db, $_SESSION['utilisateur']['uti_type']);
 
-/* On ne se pose la question des droits d'accès que si l'appelant l'a demandé,
-   en définissant OW_BACKEND_ACTION */
+/* On ne se pose la question des droits d'accÃ¨s que si l'appelant l'a demandÃ©,
+   en dÃ©finissant OW_BACKEND_ACTION */
 if(defined('OW_BACKEND_ACTION'))
 {
   if(!$pm->canDoAction(OW_BACKEND_ACTION))

@@ -10,40 +10,40 @@ $rub = array();
 $fs->nbLineParPage = 1;
 $OW_presentation = $fs->getListPage(array('type' => 'openwebgroup', 'repertoire' => 'openwebgroup'), $rub);
 
-setlocale(LC_ALL, "fr_FR");
+setlocale(LC_TIME, 'fr_FR');
+setlocale(LC_MESSAGES, 'fr_FR');
 
 ob_start();
 
 ?>
-<!-- Début Texte -->
+<!-- DÃ©but Texte -->
 <div xmlns="http://www.w3.org/1999/xhtml" id="texteaccueil">
 
-  <!-- Début Intro -->
+  <!-- DÃ©but Intro -->
   <div id="intro">
 
-  <!-- Début Présentation -->
+  <!-- DÃ©but PrÃ©sentation -->
   <div id="presentation">
-    <h2>Présentation</h2>
+    <h2>PrÃ©sentation</h2>
     <p><?php
 if(count($OW_presentation) == 0)
 {
-  echo 'Pas de présentation pour le moment';
+  echo 'Pas de prÃ©sentation pour le moment';
 }
 else
 {
   $OW_presentation = $OW_presentation[0];
   echo $OW_presentation['accroche'];
-  echo ' <a href="', $OW_presentation['repertoire'],'">Présentation complète</a>.';
+  echo ' <a href="', $OW_presentation['repertoire'],'">PrÃ©sentation complÃ¨te</a>.';
 }
 ?></p>
   </div>
-  <!-- Fin Présentation -->
+  <!-- Fin PrÃ©sentation -->
 
-  <!-- Début Humeur -->
+  <!-- DÃ©but Humeur -->
   <div id="humeur">
-  <h2>Humeur&#8230;</h2>
 <?php
-OW_liste_document(array('type' => 'H'), 1);
+OW_liste_document(array('type' => 'H'), 1, 'Humeur&#8230;');
 ?>
   </div>
   <!-- Fin Humeur -->
@@ -51,19 +51,32 @@ OW_liste_document(array('type' => 'H'), 1);
 </div>
 <!-- Fin Intro -->
 
-<!-- Début Actualité -->
+<!-- DÃ©but ActualitÃ© -->
 <div id="actualite">
-  <h2>Actualité</h2>
+  <h2>ActualitÃ©</h2>
   <dl>
+<?php
+require_once('actualite/inc/prepend.php');
+$con = new connection($dbuser, $dbpass, $dbhost, $dbbase);
+$blog = new blog($con, DB_PREFIX, NULL, dc_encoding);
+$news = $blog->getLastNews(3);
+while(!$news->EOF())
+{
+  echo '  <dt>', $news->f('post_titre'), ' par ', $news->getUserCN(),
+       ', le ', strftime('%x', strtotime($news->f('post_dt'))), "</dt>\n";
+  echo '  <dd>', $news->f('post_content'), "</dd>";
+  $news->moveNext();
+}
+$con->close();
+?>
   </dl>
 </div>
-<!-- Fin Actualité -->
+<!-- Fin ActualitÃ© -->
 
-<!-- Début Derniers Articles -->
+<!-- DÃ©but Derniers Articles -->
 <div id="articles">
-  <h2>Derniers articles&#8230;</h2>
 <?php
-OW_liste_document(array('type' => 'A'));
+OW_liste_document(array('type' => 'A'), 3, 'Derniers articles&#8230;');
 ?>
   <p><a href="/articles/">Tous les articles</a></p>
 </div>
@@ -73,11 +86,10 @@ OW_liste_document(array('type' => 'A'));
 <?php
 $buf = ob_get_contents();
 $xh = xslt_create();
-$args = array('/_xml' => '<'.'?xml version="1.0" encoding="iso-8859-1"?'.'>'.$buf);
+$args = array('/_xml' => '<'.'?xml version="1.0" encoding="utf-8"?'.'>'.$buf);
 ob_end_clean();
 $params = array('path_site_root' => PATH_SITE_ROOT);
 $result = xslt_process($xh, 'arg:/_xml', PATH_INC_FRONTEND.'index.xsl',
     null, $args, $params);
-header("Content-type: text/html; charset=utf-8");
 eval('?>'.$result);
 ?>

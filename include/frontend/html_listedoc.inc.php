@@ -1,18 +1,18 @@
 <?php
 /**
- * Crée une liste de documents en XHTML
+ * CrÃ©e une liste de documents en XHTML
  * @package Frontend
- * @subpackage Présentation
+ * @subpackage PrÃ©sentation
  * @author Laurent Jouanneau
  * @author Florian Hatat
- * @copyright Copyright © 2003 OpenWeb.eu.org
+ * @copyright Copyright Â© 2003 OpenWeb.eu.org
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License
  */
 
 require_once('init.inc.php');
 
-function OW_liste_document ($criteres, $max = 90, $show_extra_infos = true,
-			    $show_categories = true)
+function OW_liste_document ($criteres, $max = 90, $titre = "Tous les articles",
+                            $show_extra_infos = true, $show_categories = true)
 {
   global $db;
   require_once (PATH_INC_FRONTEND.'FrontService.class.php');
@@ -27,13 +27,16 @@ function OW_liste_document ($criteres, $max = 90, $show_extra_infos = true,
 
   if (count ($OW_liste_article) > 0)
   {
+    if(!empty($titre))
+      echo '<h2>', $titre, "</h2>\n";
+
     echo "<dl class=\"listedocs\">\n";
     foreach ($OW_liste_article as $art)
     {
       echo '  <dt><cite><a href="'.$art['repertoire'].'">'.$art['titre'].'</a></cite>';
       if ($show_extra_infos)
       {
-        echo ' par '.$art['auteurs'].', le '.$art['date'];
+        echo ' par '.$art['auteurs'].', le '.strftime('%x', $art['date']);
 
         if ($show_categories && !empty($art['classement']))
         {
@@ -50,6 +53,11 @@ function OW_liste_document ($criteres, $max = 90, $show_extra_infos = true,
     }
     echo "</dl>";
   }
+}
+
+function OW_intro_liste_document($doc_rep)
+{
+  OW_liste_document(array("classement" => array($doc_rep => true)));
 }
 
 ?>

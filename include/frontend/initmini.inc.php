@@ -5,11 +5,11 @@
  * @subpackage Coordination
  * @author Laurent Jouanneau
  * @author Florian Hatat
- * @copyright Copyright © 2003 OpenWeb.eu.org
+ * @copyright Copyright Â© 2003 OpenWeb.eu.org
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License
  */
 
-header("Content-type: text/html; charset=iso-8859-1");
+header("Content-type: text/html; charset=utf-8");
 define('PATH_SITE_ROOT',dirname(realpath(__FILE__.'/../../')).'/');
 define('PATH_INCLUDE',PATH_SITE_ROOT .'include/');
 define('PATH_INC_FRONTEND', dirname(__FILE__).'/');

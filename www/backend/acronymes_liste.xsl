@@ -6,7 +6,7 @@
 
 <xsl:strip-space elements="*"/>
 
-<xsl:output method="xml" version="1.0" encoding="iso-8859-1"
+<xsl:output method="xml" version="1.0" encoding="utf-8"
   omit-xml-declaration="yes" indent="yes"/>
 
 <xsl:template match="/">

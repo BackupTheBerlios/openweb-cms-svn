@@ -36,6 +36,7 @@ Racine du document
 <xsl:template match="/">
   <xsl:processing-instruction name="php">
   include('<xsl:value-of select="$path_site_root"/>include/frontend/switcher.inc.php');
+  include('<xsl:value-of select="$path_site_root"/>include/frontend/html_listedoc.inc.php');
   </xsl:processing-instruction>
   <xsl:apply-templates select="$doc.template/*" mode="template"/>
 </xsl:template>

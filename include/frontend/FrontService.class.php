@@ -5,11 +5,9 @@
  * @subpackage Services
  * @author Laurent Jouanneau
  * @author Florian Hatat
- * @copyright Copyright © 2003 OpenWeb.eu.org
+ * @copyright Copyright Â© 2003 OpenWeb.eu.org
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License
  * @uses Manager
- * @todo implémenter toutes les fonctions qui peuvent être utiles dans les
- * pages publiques, principalement les listes d'articles.
  */
 
 require_once (PATH_INC_BASECLASS.'Manager.class.php');
@@ -20,55 +18,54 @@ class FrontService extends Manager
   var $nbLiensMax = 10;
 
   /**
-   * Récupérer une liste d'article en fonction de critères
-   * @param   array   $params         tableau associatif contenant les critères de sélection, (nom du paramètre => valeur du paramètre)
-   * @param   array   $infosPages     tableau associatif contenant des indications sur le nombre de pages, la liste des numéros de pages dispo, etc.
+   * RÃ©cupÃ©rer une liste d'article en fonction de critÃ¨res
+   * @param   array   $params         tableau associatif contenant les critÃ¨res de sÃ©lection, (nom du paramÃ¨tre => valeur du paramÃ¨tre)
+   * @param   array   $infosPages     tableau associatif contenant des indications sur le nombre de pages, la liste des numÃ©ros de pages dispo, etc.
    * @return  array   liste des articles
    */
   function getListPage($params, &$infosPages)
   {
-    $sql = 'SELECT d.doc_id as id, doc_titre as titre, doc_auteurs as auteurs,
-            CONCAT(typ_repertoire, "/", doc_repertoire) as repertoire,
-            doc_accroche as accroche, doc_date_modification ';
-    $from = ' FROM doc_document d NATURAL JOIN typ_typedocument ';
-    $where = ' WHERE doc_etat > 0 ';
-    $order = ' ORDER BY doc_date_modification DESC ';
-
+    $select = 'SELECT d.doc_id as id, d.doc_titre as titre,
+            d.doc_auteurs as auteurs,
+            CONCAT(typ_repertoire, "/", d.doc_repertoire) as repertoire,
+            d.doc_accroche as accroche, d.doc_date_modification';
+    $from = 'FROM doc_document d NATURAL JOIN typ_typedocument';
+    $where = 'WHERE d.doc_etat > 0';
 
     if(isset($params['type']) && strlen($params['type']) == 1)
       $where .= ' AND d.typ_id = \''.trim($params['type']).'\'';
     if(isset($params['repertoire']))
       $where .= ' AND doc_repertoire = '.$this->db->quote($params['repertoire']);
 
-    /**
-     * @todo pousser si possible la perversion plus loin et virer les requêtes sql intermédiaires :-P
-     */
     $i = 0;
-    foreach($params as $clef => $val)
-      if(strpos($clef, 'cri_') === 0 && $val != 'none')
+    if(isset($params['classement']))
+      foreach($params['classement'] as $intro => $strict)
       {
-        $clef = substr($clef, 4);
-        $tmpsql = 'SELECT cri_id FROM cri_criteres WHERE cri_name = '.$this->db->quote($clef);
-	$res = $this->_getRow($tmpsql);
-        $crit = $res['cri_id'];
-        $tmpsql = 'SELECT doc_id FROM doc_document WHERE doc_repertoire = '.$this->db->quote($val);
-        $res = $this->_getRow($tmpsql);
-        $intro = $res['doc_id'];
-	$from .= ", document_criteres c$i";
-	$where .= " AND d.doc_id = c$i.doc_id AND c$i.cri_id = ".intval($crit)." AND c$i.intro_id = ".intval($intro);
+	$from .= ", document_criteres c$i, doc_document d$i";
+	$where .= " AND d.doc_id = c$i.doc_id AND c$i.intro_id = d$i.doc_id AND d$i.doc_repertoire = ".$this->db->quote($intro);
+        if($strict === true)
+          $where .= " AND c$i.doc_id != d$i.doc_id";
 	$i++;
       }
+
+    /**
+     * @todo Ãªtre plus prÃ©cis sur le tri : trier selon l'ordre des critÃ¨res, et pour chaque critÃ¨re selon l'ordre des intros
+     */
+    if($i > 0)
+      $order = 'ORDER BY c0.ordre ASC';
+    else
+      $order = 'ORDER BY d.doc_date_modification DESC';
 
     if(isset($params['pg']))
       $page = intval($params['pg']);
     else
       $page = 0;
     
-    $nombreLigneTotal = $this->_getCount($from.$where);
+    $nombreLigneTotal = $this->_getCount($from.' '.$where);
 
     $infosPages = $this->getIndexPages($page, $this->nbLigneParPage, $nombreLigneTotal, $this->nbLiensMax);
 
-    $sql = $sql.$from.$where.$order;
+    $sql = $select.' '.$from.' '.$where.' '.$order;
 
     $liste = $this->_getListPage($sql, $page, $this->nbLigneParPage);
 
@@ -76,26 +73,14 @@ class FrontService extends Manager
     {
       $liste[$k]['repertoire'] = preg_replace('/\/+/', '/', '/'.$art['repertoire'].'/');
       $liste[$k]['classement'] = $this->getClassements($art['id']);
-      $liste[$k]['date'] = $this->_getDateFr($art['doc_date_modification']);
+      $liste[$k]['date'] = strtotime($art['doc_date_modification']);
     }
     return $liste;
   }
 
   /**
-   * Transforme une date base en date fr
-   * @param   string  $dt la date au format base de donnée
-   * @return  string  la date au format fr
-   * @todo à virer pour les versions suivantes (i18n...)
-   */
-  function _getDateFr($dt) 
-  {
-    setlocale(LC_TIME, "fr_FR");
-    return strftime("%x", strtotime($dt));
-  }
-
-  /**
-   * Récupère le classement d'un document
-   * @param integer $docid id du document cherché
+   * RÃ©cupÃ¨re le classement d'un document
+   * @param integer $docid id du document cherchÃ©
    * @return array les classements
    */
   function getClassements($doc_id)
@@ -115,9 +100,9 @@ class FrontService extends Manager
   }
 
   /**
-   * Récupère le chemin de stockage d'un document
-   * @param integer $doc_id id du document concerné
-   * @return string chemin, relatif à la racine du site
+   * RÃ©cupÃ¨re le chemin de stockage d'un document
+   * @param integer $doc_id id du document concernÃ©
+   * @return string chemin, relatif Ã  la racine du site
    * @see Document::getDocumentPath
    */
   function getDocumentPath($doc_rep)

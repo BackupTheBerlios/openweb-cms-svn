@@ -1,11 +1,11 @@
 <?php
 /**
- * Gestion des tables de références
+ * Gestion des tables de rÃ©fÃ©rences
  * @package Backend
  * @subpackage Services
  * @author Laurent Jouanneau
  * @author Florian Hatat
- * @copyright Copyright © 2003 OpenWeb.eu.org
+ * @copyright Copyright Â© 2003 OpenWeb.eu.org
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License
  * @uses Manager
  */
@@ -15,7 +15,7 @@ require_once (PATH_INC_BASECLASS.'Manager.class.php');
 class ReferenceManager extends Manager
 {
   /**
-   * Renvoie la liste des critères de classement
+   * Renvoie la liste des critÃ¨res de classement
    * @return  array   la liste
    */
   function getCriterionList()
@@ -31,9 +31,9 @@ class ReferenceManager extends Manager
   }
 
   /**
-   * Retourne les infos pour un critère
-   * @param mixed $crit id (entier) ou nom (chaîne) du critère à rechercher
-   * @return array informations sur le critère ou vide
+   * Retourne les infos pour un critÃ¨re
+   * @param mixed $crit id (entier) ou nom (chaÃ®ne) du critÃ¨re Ã  rechercher
+   * @return array informations sur le critÃ¨re ou vide
    */
   function getCriterionInfos($crit)
   {
@@ -48,17 +48,17 @@ class ReferenceManager extends Manager
   }
 
   /**
-   * Ajoute un critère dans la base de données
-   * @param string $nom nom du critère à ajouter
-   * @param string $libelle libellé du critère
-   * @return boolean vrai si l'opération réussit
+   * Ajoute un critÃ¨re dans la base de donnÃ©es
+   * @param string $nom nom du critÃ¨re Ã  ajouter
+   * @param string $libelle libellÃ© du critÃ¨re
+   * @return boolean vrai si l'opÃ©ration rÃ©ussit
    */
   function addCriterion($nom, $libelle)
   {
     $res = $this->getCriterionInfos($nom);
 
     if(count($res) != 0)
-      return false; /* On ne remplace pas un critère existant */
+      return false; /* On ne remplace pas un critÃ¨re existant */
 
     $sql = 'INSERT INTO cri_criteres (cri_name, cri_libelle) VALUES
             ('.$this->db-quote($nom).', '.$this->db->quote($libelle).')';
@@ -72,17 +72,17 @@ class ReferenceManager extends Manager
   }
 
   /**
-   * Modifie le libellé d'un critère dans la base de données
-   * @param string $nom nom du critère à modifier
-   * @param string $libelle nouveau libellé
-   * @return boolean vrai si l'opération réussit
+   * Modifie le libellÃ© d'un critÃ¨re dans la base de donnÃ©es
+   * @param string $nom nom du critÃ¨re Ã  modifier
+   * @param string $libelle nouveau libellÃ©
+   * @return boolean vrai si l'opÃ©ration rÃ©ussit
    */
   function updateCriterion($nom, $libelle)
   {
     $res = $this->getCriterionInfos($nom);
 
     if(count($res) != 0)
-      return false; /* On ne remplace pas un critère existant */
+      return false; /* On ne remplace pas un critÃ¨re existant */
 
     $sql = 'UPDATE cri_criteres
             SET cri_libelle = '.$this->db->quote($libelle).'
@@ -97,10 +97,10 @@ class ReferenceManager extends Manager
   }
 
   /**
-   * Supprime un critère de la base de données
-   * @param string $nom nom du critère à supprimer
-   * @param boolean $force force la suppression même s'il existe des classements liés à ce critère
-   * @param boolean $purge indique s'il faut également enlever tous les classements relatifs à ce critère
+   * Supprime un critÃ¨re de la base de donnÃ©es
+   * @param string $nom nom du critÃ¨re Ã  supprimer
+   * @param boolean $force force la suppression mÃªme s'il existe des classements liÃ©s Ã  ce critÃ¨re
+   * @param boolean $purge indique s'il faut Ã©galement enlever tous les classements relatifs Ã  ce critÃ¨re
    * @return boolean vrai si la suppression a eu lieu
    */
   function deleteCriterion($nom, $force = false, $purge = false)
@@ -108,8 +108,8 @@ class ReferenceManager extends Manager
     if(count($cri = $this->getCriterionInfos($nom)) == 0)
       return false; /* On ne supprime pas l'inexistant */
 
-    /* Si l'on n'a pas demandé de passer la tronçonneuse aveuglément on
-       vérifie que le bois n'est pas protégé par un traité international */
+    /* Si l'on n'a pas demandÃ© de passer la tronÃ§onneuse aveuglÃ©ment on
+       vÃ©rifie que le bois n'est pas protÃ©gÃ© par un traitÃ© international */
     if(!$force)
     {
       $sql = 'SELECT count(doc_id) AS num FROM document_criteres
@@ -138,9 +138,9 @@ class ReferenceManager extends Manager
   }
 
   /**
-   * Renvoie la liste des classements possibles pour un critère
-   * @param string $criterion le critère
-   * @param boolean $only_online précise s'il faut exclure les intros hors-ligne
+   * Renvoie la liste des classements possibles pour un critÃ¨re
+   * @param string $criterion le critÃ¨re
+   * @param boolean $only_online prÃ©cise s'il faut exclure les intros hors-ligne
    * @return array la liste
    */
   function getEntriesList($criterion, $only_online = false)
@@ -165,8 +165,8 @@ class ReferenceManager extends Manager
   }
 
   /**
-   * Renvoie la liste des classements d'un document pour un critère
-   * @param string $criterion le critère
+   * Renvoie la liste des classements d'un document pour un critÃ¨re
+   * @param string $criterion le critÃ¨re
    * @param integer $doc_id id du document
    * @return array la liste
    */
@@ -190,7 +190,7 @@ class ReferenceManager extends Manager
   }
 
   /**
-   * Renvoie la liste des états possibles pour un document
+   * Renvoie la liste des Ã©tats possibles pour un document
    * @return  array   la liste
    */
   function getStatusList()
@@ -206,8 +206,8 @@ class ReferenceManager extends Manager
   }
 
   /**
-   * Renvoie les informations sur un état
-   * @param mixed $eta id ou nom de l'état
+   * Renvoie les informations sur un Ã©tat
+   * @param mixed $eta id ou nom de l'Ã©tat
    * @return array les informations
    */
   function getStatusInfos($eta)
@@ -235,7 +235,7 @@ class ReferenceManager extends Manager
   /**
    * Modifie le classement d'un article
    * @param array $crit nouveux classements
-   * @param integer $doc_id l'id du document concerné
+   * @param integer $doc_id l'id du document concernÃ©
    */
   function setEntriesListByDoc($crit, $doc_id)
   {
@@ -282,7 +282,7 @@ class ReferenceManager extends Manager
   }
 
   /**
-   * Vérifie que les classements passés en paramètre existent dans la base
+   * VÃ©rifie que les classements passÃ©s en paramÃ¨tre existent dans la base
    * @param array $criteres
    * @return boolean vrai les tous les classements sont valides
    */
@@ -302,12 +302,12 @@ class ReferenceManager extends Manager
   }
 
   /**
-   * Copie les classements en base vers une représentation XML
-   * @todo sécuriser l'écriture du fichier (collision possible entre deux écritures en parallèle)
+   * Copie les classements en base vers une reprÃ©sentation XML
+   * @todo sÃ©curiser l'Ã©criture du fichier (collision possible entre deux Ã©critures en parallÃ¨le)
    */
   function dumpClassements()
   {
-    $res = '<?xml version="1.0" encoding="iso-8859-1"?>'."\n<criteres>\n";
+    $res = '<?xml version="1.0" encoding="utf-8"?>'."\n<criteres>\n";
     foreach($this->getCriterionList() as $critnam => $critlib)
     {
       $res .= '  <critere name="'.$critnam.'" libelle="'.$critlib.'">'."\n  <classements>\n";

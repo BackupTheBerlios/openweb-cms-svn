@@ -5,7 +5,7 @@
  * @subpackage Services
  * @author Laurent Jouanneau
  * @author Florian Hatat
- * @copyright Copyright © 2003 OpenWeb.eu.org
+ * @copyright Copyright Â© 2003 OpenWeb.eu.org
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License
  * @see XML_Tree
  */
@@ -14,9 +14,9 @@ require_once(PATH_INC_BACKEND_SERVICE.'DocInfos.class.php');
 require_once("XML/Tree.php");
 
 /**
- * Renvoie les enfants d'un élément d'après leur nom
- * @param object XML_Tree_Node $node élément parent à parcourir
- * @param string $name nom de l'élément enfant à sélectionner
+ * Renvoie les enfants d'un Ã©lÃ©ment d'aprÃ¨s leur nom
+ * @param object XML_Tree_Node $node Ã©lÃ©ment parent Ã  parcourir
+ * @param string $name nom de l'Ã©lÃ©ment enfant Ã  sÃ©lectionner
  * @return array tableaux d'objects XML_Tree_Node
  */
 function getElementsByTagName($node, $name)
@@ -30,13 +30,13 @@ function getElementsByTagName($node, $name)
 }
 
 /**
- * Transforme un élément en texte.
- * Cette fonction parcourt récursivement les descendants d'un élément et
- * renvoie la chaîne formée par la concaténation de toutes les valeurs
+ * Transforme un Ã©lÃ©ment en texte.
+ * Cette fonction parcourt rÃ©cursivement les descendants d'un Ã©lÃ©ment et
+ * renvoie la chaÃ®ne formÃ©e par la concatÃ©nation de toutes les valeurs
  * des enfants.
  * @param object XML_Tree_Node $element
- * @todo vérifier si la fonction ne retire pas trop d'espace, ou au contraire n'en laisse pas qui auraient dû être supprimées.
- * @todo remplacer les entités XML par les caractères correspondants (&amp;, &lt;, et &gt;)
+ * @todo vÃ©rifier si la fonction ne retire pas trop d'espace, ou au contraire n'en laisse pas qui auraient dÃ» Ãªtre supprimÃ©es.
+ * @todo remplacer les entitÃ©s XML par les caractÃ¨res correspondants (&amp;, &lt;, et &gt;)
  * @return string
  */
 function _tree2text($element)
@@ -45,7 +45,7 @@ function _tree2text($element)
   if(!strcmp($element->name, '')) /* pas d'enfants pour ce noeud */
     return $text;
   foreach($element->children as $child)
-    $text .= _tree2text($child); /* Vive la récursivité */
+    $text .= _tree2text($child);
   return preg_replace("/&#([0-9]+);/me", "chr('\\1')", trim($text));
 }
 
@@ -60,11 +60,11 @@ function _prendfiltres($element)
 }
 
 /**
- * Récupérer toutes les informations dans un fichier DocBook.
- * @param string $filename nom du fichier à analyser
- * @return object DocInfos objet contenant les infos de l'article, ou un tableau de chaînes contenant des messages d'erreurs
- * @todo Mauvaise gestion des erreurs, à refaire.
- * @todo Relire le code, il ne vérifie parfois pas assez les données d'entrées/les erreurs qui peuvent survenir pendant le traitement.
+ * RÃ©cupÃ©rer toutes les informations dans un fichier DocBook.
+ * @param string $filename nom du fichier Ã  analyser
+ * @return object DocInfos objet contenant les infos de l'article, ou un tableau de chaÃ®nes contenant des messages d'erreurs
+ * @todo Mauvaise gestion des erreurs, Ã  refaire.
+ * @todo Relire le code, il ne vÃ©rifie parfois pas assez les donnÃ©es d'entrÃ©es/les erreurs qui peuvent survenir pendant le traitement.
  */
 function docbookGetArticleInfoFromFile($filename)
 {
@@ -72,28 +72,28 @@ function docbookGetArticleInfoFromFile($filename)
 
   /* Extrait du XML toutes les informations pour remplir la classe Article */
 
-  /* Obtenir un arbre à partir du fichier XML */
+  /* Obtenir un arbre Ã  partir du fichier XML */
   $xmltree = new XML_Tree($filename);
-  /* lecture du fichier qui récupère la balise <article> */
+  /* lecture du fichier qui rÃ©cupÃ¨re la balise <article> */
   $article = $xmltree->getTreeFromFile();
 
   if($xmltree->isError($article))
   {
     $erreur = $article->getUserInfo();
     if($erreur == '')
-      $erreur = 'probablement un document mal formé';
+      $erreur = 'probablement un document mal formÃ©';
     return array('Impossible de parser le fichier XML ('.$erreur.')');
   }
 
-  $doc->repertoire = trim($article->getAttribute("id"));
-  $doc->type = array_key_exists("role", $article->attributes) ?
-                 $article->getAttribute("role") : "article";
-  $doc->lang = array_key_exists("lang", $article->attributes) ?
-                 $article->getAttribute("lang") : "fr";
+  $doc->repertoire = utf8_encode(trim($article->getAttribute("id")));
+  $doc->type = utf8_encode(array_key_exists("role", $article->attributes) ?
+                 $article->getAttribute("role") : "article");
+  $doc->lang = utf8_encode(array_key_exists("lang", $article->attributes) ?
+                 $article->getAttribute("lang") : "fr");
 
   $artinfonode = getElementsByTagName($article, "articleinfo");
   if(count($artinfonode) == 0)
-     return array('Impossible de continuer à parser le fichier XML : il manque la section articleinfo du docbook');
+     return array('Impossible de continuer Ã  parser le fichier XML : il manque la section articleinfo du docbook');
   /* Traitement particulier pour les balises <author> */
   $auteurs = array();
 
@@ -106,30 +106,30 @@ function docbookGetArticleInfoFromFile($filename)
                  (count($surnames) ? ucfirst(trim(_tree2text($surnames[0])))
                    : "");
   }
-  $doc->auteurs = implode(', ', $auteurs);
+  $doc->auteurs = utf8_encode(implode(', ', $auteurs));
 
   $doc->classement = array();
 
   foreach($artinfonode[0]->children as $child)
   {
-    /* Récupération des balises <title>, <pubdate> et <date> */
-    if(!strcmp($child->name, "title")) $doc->titre = _tree2text($child);
-    if(!strcmp($child->name, "titleabbrev")) $doc->titremini = _tree2text($child);
-    if(!strcmp($child->name, "pubdate")) $doc->pubdate = _tree2text($child);
-    if(!strcmp($child->name, "date")) $doc->update = _tree2text($child);
+    /* RÃ©cupÃ©ration des balises <title>, <pubdate> et <date> */
+    if(!strcmp($child->name, "title")) $doc->titre = utf8_encode(_tree2text($child));
+    if(!strcmp($child->name, "titleabbrev")) $doc->titremini = utf8_encode(_tree2text($child));
+    if(!strcmp($child->name, "pubdate")) $doc->pubdate = utf8_encode(_tree2text($child));
+    if(!strcmp($child->name, "date")) $doc->update = utf8_encode(_tree2text($child));
 
     if(!strcmp($child->name, "subjectset"))
     {
       foreach(getElementsByTagName($child, "subject") as $subjnode)
       {
-        $attribute = $subjnode->getAttribute("role");
+        $attribute = utf8_encode($subjnode->getAttribute("role"));
         $doc->classement[$attribute] = array();
         foreach(getElementsByTagName($subjnode, "subjectterm") as $entry)
-          $doc->classement[$attribute][] = _tree2text($entry);
+          $doc->classement[$attribute][] = utf8_encode(_tree2text($entry));
       }
     }
     if(!strcmp($child->name, "abstract"))
-      $doc->accroche = _tree2text($child);
+      $doc->accroche = utf8_encode(_tree2text($child));
   }
 
   return $doc;

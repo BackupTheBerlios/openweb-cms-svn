@@ -1,11 +1,11 @@
 <?php
 /**
- * Détails d'un document
+ * DÃ©tails d'un document
  * @package Backend
  * @subpackage Presentation
  * @author Laurent Jouanneau
  * @author Florian Hatat
- * @copyright Copyright © 2003 OpenWeb.eu.org
+ * @copyright Copyright Â© 2003 OpenWeb.eu.org
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License
  */
 
@@ -18,16 +18,16 @@ require_once(PATH_INC_BACKEND_SERVICE.'WorkflowManager.class.php');
 $wk = new WorkflowManager($db, $_SESSION['utilisateur']['uti_id']);
 
 /**
- * @todo permettre de choisir un document si aucun n'a été précisé
+ * @todo permettre de choisir un document si aucun n'a Ã©tÃ© prÃ©cisÃ©
  */
 if(!isset($_GET['id']))
 {
-  echo '<p>Aucun document à afficher</p>';
+  echo '<p>Aucun document Ã  afficher</p>';
   exit;
 }
 
 /**
- * @todo vérifier que le chargement du document a réussi
+ * @todo vÃ©rifier que le chargement du document a rÃ©ussi
  */
 $doc = new Document($db, $_GET['id']);
 
@@ -40,13 +40,15 @@ $actionsForbid = array_diff($actionsAll, $actionsAllow);
 <dl class="details">
   <dt>Type</dt><dd><?php echo $doc->type->libelle; ?></dd>
   <dt>Titre</dt><dd><?php echo $doc->infos->titre; ?></dd>
+<?php if(!empty($doc->infos->accroche)) { ?>
   <dt>Accroche</dt><dd><?php echo $doc->infos->accroche; ?></dd>
+<?php } ?>
   <dt>Auteurs</dt><dd><?php echo $doc->infos->auteurs; ?></dd>
   <dt>Date de publication</dt><dd><?php echo $doc->infos->pubdate; ?></dd>
   <dt>Date de modification</dt><dd><?php echo $doc->infos->update; ?></dd>
   <dt>Langue</dt><dd><?php echo $doc->infos->lang; ?></dd>
-  <dt>Répertoire</dt><dd><?php echo $doc->infos->repertoire; ?></dd>
-  <dt>État</dt><dd><?php $eta = $doc->ref->getStatusInfos($doc->etat); echo $eta["libelle"]; unset($eta); ?></dd>
+  <dt>RÃ©pertoire</dt><dd><?php echo $doc->infos->repertoire; ?></dd>
+  <dt>Ã‰tat</dt><dd><?php $eta = $doc->ref->getStatusInfos($doc->etat); echo $eta["libelle"]; unset($eta); ?></dd>
 <?php
 foreach($doc->infos->classement as $crit => $classement)
   if(!empty($classement))
@@ -129,7 +131,7 @@ if($modifann)
 <form enctype="multipart/form-data" action="<?php $annx = $pm->getActionInfos('ACT_DOC_ANNEXES'); echo $annx['act_param'], '?id=', $doc->id; unset($annx); ?>" method="post">
   <fieldset>
     <legend>Ajouter/remplacer une annexe</legend>
-    <label>Fichier : <input type="file" name="ficadd" id="ficadd" /></label><br />
+    <label>FichierÂ : <input type="file" name="ficadd" id="ficadd" /></label><br />
     <input type="submit" name="act_ACT_DOC_ANNEXES" value="Enregistrer" />
   </fieldset>
 </form>
