@@ -10,10 +10,9 @@
 
 require_once(PATH_INC_BACKEND_SERVICE."DocumentType.class.php");
 require_once(PATH_INC_BACKEND_SERVICE."ReferenceManager.class.php");
+require_once(PATH_INC_BACKEND_SERVICE."DocbookParse.lib.php");
 require_once(PATH_INC_BACKEND_SERVICE."DocInfos.class.php");
 require_once(PATH_INC_BACKEND_SERVICE."OutputFactory.lib.php");
-require_once(PATH_INC_BASECLASS.'FileLock.class.php');
-require_once('PEAR/ErrorStack.php');
 
 class Document
 {
@@ -45,13 +44,13 @@ class Document
 
   /**
    * liste des messages d'erreurs survenus pendant les traitements
-   * @var PEAR_ErrorStack
+   * @var array
    */
-  var $errors;
+  var $errors = array();
 
   /** 
    * connexion à la base de données
-   * @var object PEAR::DB
+   * @var object PEAR::DB $db
    */
   var $db;
 
@@ -66,7 +65,7 @@ class Document
     $this->ref = new ReferenceManager($this->db);
 
     $this->id = $this->type = $this->infos = null;
-    $this->errors = &PEAR_ErrorStack::singleton('OpenWeb_Backend_Document');
+    $this->errors = array();
 
     if($doc_id !== null)
       $this->load($doc_id);
@@ -81,28 +80,25 @@ class Document
    */
   function setContentFromDocbook($fichier)
   {
-    require_once(PATH_INC_BACKEND_SERVICE."DocbookParse.lib.php");
-
-    $errors = &PEAR_ErrorStack::singleton('OpenWeb_Backend_DocbookParse');
-    $errors->pushCallback(array(&$this, '_repackageErrorStack'));
-    
-    $this->infos = docbookGetArticleInfoFromFile($fichier);
-    $this->infos->verifyRepertoire();
-
-    $errors->popCallback();
-
-    if($this->errors->hasErrors())
+    if(is_array($this->infos = docbookGetArticleInfoFromFile($fichier)))
+    {
+      $this->errors = array_merge($this->errors, $this->infos);
+      $this->infos = null;
       return false;
+    }
 
-    $errors = &PEAR_ErrorStack::singleton('OpenWeb_Backend_DocumentType');
-    $errors->pushCallback(array(&$this, '_repackageErrorStack'));
-    
     $this->type = new DocumentType($this->infos->type);
-
-    $errors->popCallback();
-
-    if($this->errors->hasErrors())
+    if(!$this->type)
+    {
+      $this->errors[] = "type de document inconnu";
       return false;
+    }
+
+    if(!$this->infos->verifyRepertoire())
+    {
+      $this->errors[] = 'répertoire indéfini';
+      return false;
+    }
 
     /* lorsque l'article est tout nouveau, on vérifie en base si le
        nom du répertoire est unique */
@@ -115,69 +111,65 @@ class Document
       $rep = $this->db->getRow($sql);
       if(DB::isError($rep))
       {
-        $this->errors->push(17); /*impossible de lire depuis la base de données*/
+        $this->errors[] = "impossible de lire depuis la base de données";
 	return false;
       }
 
       if(intval($rep['cnt']) > 0)
       {
-        $this->errors->push(17); /*"donnez un autre nom de répertoire : ".$this->infos->repertoire." est déjà utilisé";*/
+        $this->errors[] = "donnez un autre nom de répertoire : ".$this->infos->repertoire." est déjà utilisé";
         return false;
       }
     }
 
     if(in_array($this->type->repertoire.$this->infos->repertoire, $GLOBALS['OW_FORBIDDEN_DIR']))
     {
-      $this->errors->push(17);/*"nom de répertoire interdit pas l'admin*/
+      $this->errors[] = "nom de répertoire interdit";
       return false;
     }
 
+    // vérification que le répertoire n'est pas verrouillé
     $destdir = PATH_SITE_ROOT.$this->getDocumentPath();
+    if(file_exists($destdir.".lock"))
+    {
+      $this->errors[] = 'verrou existant, aucune action possible';
+      return false;
+    }
 
     // vérification des propriétes
-    $this->_validateProperties();
-    if($this->errors->hasErrors())
+    if(!$this->_verifyProperties())
+      return false;
+
+    if(count($this->errors) != 0)
       return false;
 
     // création du répertoire de l'article dans temp
     umask(0022);
-
-    if(file_exists($destdir))
+    touch($destdir.".lock");
+    if(!file_exists($destdir))
     {
-      if(!is_dir($destdir))
-        $this->errors->push(17); /* @todo error code */
-    }
-    else
       mkdir($destdir, 0755);
-
-    $annexes = $destdir."/annexes";
-    if(file_exists($annexes))
-    {
-      if(!is_dir($annexes))
-        $this->errors->push(17); /* @todo error code */
+      mkdir($destdir."/annexes", 0755);
     }
-    else
-      mkdir($annexes, 0755);
 
-    $dbkfile = $this->getDocumentFileName('docbook');
+    $docbook_name = $this->getDocumentFileName('docbook');
 
-    /* @todo traiter les erreurs ici */
-    $fl = new FileLock();
-    ignore_user_abort(true);
+    // copie du fichier uploadé
+    rename($fichier, $docbook_name);
 
-    $fp = $fl->Open($dbkfile);
-    fwrite($fp, file_get_contents($fichier));
-    $fl->Close($fp);
-
-    ignore_user_abort(false);
-    chmod($dbkfile, 0644);
-
-    if($this->errors->hasErrors())
-      return false;
+    chmod($docbook_name, 0644);
 
     // enregistrement en base des différentes infos
-    $this->_saveDb();
-
+    if(count($this->errors) == 0)
+    {
+      $this->_saveDb();
+      unlink($destdir.".lock");
+    }
+    else
+    {
+      unlink($destdir.".lock");
+      return false;
+    }
     if($newdoc)
     {
       $etat = $this->ref->getStatusInfos('OW_STATUS_TEMP');
@@ -190,12 +182,12 @@ class Document
     // conversion du fichier dans les autres formats
     $this->generation();
 
-    return !$this->errors->hasErrors();
+    return true;
   }
 
   /**
    * retourne le chemin absolu et complet du répertoire du document, 
-   * en fonction de son état ou de l'état indiqué en paramètre
+   * en fonction de son etat ou de l'etat indiqué en paramètre
    * @param   integer $etat   état à considérer
    * @return  string  chemin du répertoire du document
    */
@@ -260,6 +252,29 @@ class Document
    */
   function changeEtat($next_etat)
   {
+    /**
+     * efface un fichier ou le contenu d'un répertoire
+     * @param   string  $file   nom du fichier à supprimer
+     */
+    function delete_dir($file)
+    {
+      if (file_exists($file))
+      {
+        chmod($file, 0777);
+        if(is_dir($file))
+        {
+          $handle = opendir($file);
+          while($filename = readdir($handle))
+            if($filename != "." && $filename != "..")
+              delete_dir($file."/".$filename);
+          closedir($handle);
+          rmdir($file);
+        }
+        else
+          unlink($file);
+      }
+    }
+
     $next_etat = intval($next_etat);
 
     $tmp = $this->ref->getStatusInfos('OW_STATUS_INEXISTANT');
@@ -310,7 +325,7 @@ class Document
     if($this->id !== null)
       foreach($outputInfos['docbook'] as $out => $inf)
         if(!outputMake($dbk, 'docbook', $out))
-          $this->errors->push(17); /* "erreur lors de la génération du format ".$inf['description']." ($out)";*/
+          $this->errors[] = "erreur lors de la génération du format ".$inf['description']." ($out)";
   }
 
   /**
@@ -334,20 +349,20 @@ class Document
       $sql .= 'AND doc_repertoire = '.$this->db->quote($doc_id);
     else
     {
-      $this->errors->push(17); /*'le document doit être désigné par son id ou le nom de son répertoire';*/
+      $this->errors[] = 'le document doit être désigné par son id ou le nom de son répertoire';
       return false;
     }
 
     $res = $this->db->getRow($sql);
     if(DB::isError($res))
     {
-      $this->errors->push(17);/*'impossible d\'accéder à la base de données';*/
+      $this->errors[] = 'impossible d\'accéder à la base de données';
       return false;
     }
 
     if(count($res) == 0)
     {
-      $this->errors->push(17);/*'le document n\'existe pas dans la base de données';*/
+      $this->errors[] = 'le document n\'existe pas dans la base de données';
       return false;
     }
 
@@ -397,8 +412,6 @@ class Document
    * ajout d'une annexe à un document
    * @param   string  $fichier_temp   nom du fichier source (temporaire dans le cas d'un upload)
    * @param   string  $nom_fichier   nom du fichier cible
-   * @todo voir s'il faut verrouiller le fichier pendant l'écriture
-   * @todo renvoyer les erreurs s'il s'en produit, et s'assurer qu'on ne fait rien si par exemple le répertoire n'est pas accessible en écriture
    */
   function ajoutAnnexe($fichier_temp, $nom_fichier)
   {
@@ -411,7 +424,6 @@ class Document
    /**
    * suppression d'un fichier annexe
    * @param   string  $fichier   nom du fichier à supprimer
-   * @todo renvoyer des erreurs !
    */
   function supprimerAnnexe($fichier)
   {
@@ -502,10 +514,7 @@ class Document
 
     $res = $this->db->query($sql);
     if(DB::isError($res))
-    {
-      $this->errors->push(17); /* erreur sql, et ajouter $res->userinfo */
-      return;
-    }
+      trigger_error($res->userinfo.' ('.get_class($this).'::_createDB)', E_USER_ERROR);
 
     $res = $this->db->getRow('SELECT doc_id FROM doc_document WHERE doc_repertoire = '.$this->db->quote($this->infos->repertoire));
     $this->id = $res['doc_id'];
@@ -519,18 +528,15 @@ class Document
    * @return boolean  true= tout est ok
    * @access private
    */
-  function _validateProperties()
+  function _verifyProperties()
   {
-    $errors = &PEAR_ErrorStack::singleton('OpenWeb_Backend_DocbookParse');
-    $errors->getErrors(true);
-    $errors->pushCallback(array(&$this, '_repackageErrorStack'));
+    $this->infos->errors = array();
     $res = $this->infos->verify();
-    $errors->popCallback();
-
-    if($this->errors->hasErrors())
+    $this->errors = array_merge($this->errors, $this->infos->errors);
+    if(!$res)
       return false;
 
-    $classement = &$this->infos->classement;
+    $classement = $this->infos->classement;
 
     if($this->type->isintro)
       foreach($classement as $crit => $entries)
@@ -538,49 +544,17 @@ class Document
           if($nom == $this->infos->repertoire)
             unset($classement[$crit][$nom]);
 
-    $errors = &PEAR_ErrorStack::singleton('OpenWeb_Backend_ReferenceManager');
-    $errors->pushCallback(array(&$this, '_repackageErrorStack'));
-    $this->ref->checkClassements($classement);
-    $errors->popCallback();
-
-    if($this->errors->hasErrors())
-      return false;
-
-    $errors = &PEAR_ErrorStack::singleton('OpenWeb_Backend_DocumentType');
-    $errors->pushCallback(array(&$this, '_repackageErrorStack'));
-    $this->type->check($this->infos);
-    $errors->popCallback();
-
-    return $this->errors->hasErrors();
-  }
-
-  function _repackageErrorStack($err)
-  {
-    $this->errors->push(17, 'error', array(), false, $err);
-    return PEAR_ERRORSTACK_IGNORE;
-  }
-}
-
-/**
- * efface un fichier ou le contenu d'un répertoire
- * @param   string  $file   nom du fichier à supprimer
- */
-function delete_dir($file)
-{
-  if (file_exists($file))
-  {
-    chmod($file, 0777);
-    if(is_dir($file))
+    if(!$this->ref->checkClassements($classement))
     {
-      $handle = opendir($file);
-      while($filename = readdir($handle))
-        if($filename != "." && $filename != "..")
-          delete_dir($file."/".$filename);
-      closedir($handle);
-      rmdir($file);
+      $this->errors[] = 'classement invalide';
+      return false;
     }
-    else
-      unlink($file);
+
+    $res = $this->type->check($this->infos);
+    if(!$res)
+      $this->errors = array_merge($this->errors, $res);
+
+    return (count($this->errors) == 0);
   }
 }
 

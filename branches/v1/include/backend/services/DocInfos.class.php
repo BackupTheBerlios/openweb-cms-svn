@@ -7,13 +7,10 @@
  * @copyright 2003 OpenWeb.eu.org
  */
 
-require_once('PEAR/ErrorStack.php');
-
 class DocInfos {
 
   /**
    * libellé du type de document
-   * @var string
    */
   var $type = 'article';
 
@@ -31,7 +28,6 @@ class DocInfos {
 
   /**
    * Titre abrégé
-   * @var string
    */
   var $titremini;
 
@@ -81,24 +77,11 @@ class DocInfos {
   var $lang;
 
   /**
-   * Erreurs générées par les méthodes de la classe
-   */
-  var $errors
-
-  /**
    * Constructeur DocInfos
    */
   function DocInfos()
   {
     $this->classement = array();
-    $this->errors = &PEAR_ErrorStack::singleton('OpenWeb_Backend_DocInfos');
-    $this->errors->setErrorMessageTemplate(
-      array(
-        1 => "Date incorrecte",
-        2 => "Précisez au moins un auteur",
-        3 => "Le titre ne doit pas être vide",
-        4 => "Nom de répertoire invalide"
-    ));
   }
 
   /**
@@ -107,12 +90,9 @@ class DocInfos {
    */
   function verify()
   {
-    $this->verifyPubdate();
-    $this->verifyUpdate();
-    $this->verifyAuteurs();
-    $this->verifyTitre();
-    $this->verifyRepertoire();
-    return !$this->errors->hasErrors();
+    return $this->verifyPubdate() && $this->verifyUpdate() &&
+           $this->verifyAuteurs() && $this->verifyTitre() &&
+           $this->verifyRepertoire();
   }
 
   /**
@@ -137,7 +117,7 @@ class DocInfos {
   {
     $res = $this->_verifyDate($this->pubdate);
     if(!$res)
-      $this->errors->push(1);
+      $this->errors[] = "date de publication invalide";
     return $res;
   }
 
@@ -149,7 +129,7 @@ class DocInfos {
   {
     $res = $this->_verifyDate($this->pubdate);
     if(!$res)
-      $this->errors->push(1);
+      $this->errors[] = "date de modification invalide";
     return $res;
   }
 
@@ -161,7 +141,7 @@ class DocInfos {
   {
     if($this->auteurs == '' )
     {
-      $this->errors->push(2);
+      $this->errors[] = "précisez au moins un auteur";
       return false;
     }
     return true;
@@ -175,7 +155,7 @@ class DocInfos {
   {
     if($this->titre == '')
     {
-      $this->errors->push(3);
+      $this->errors[] = "le titre ne doit pas être vide";
       return false;
     }
     return true;
@@ -188,11 +168,10 @@ class DocInfos {
   function verifyRepertoire()
   {
     $nbcar = strlen($this->repertoire);
-
     for($i = 0; $i < $nbcar; $i++)
       if(!(ctype_alnum($this->repertoire{$i}) || $this->repertoire{$i} == '_'))
       {
-        $this->errors->push(4);
+        $this->errors[] = 'nom de répertoire incorrect (il ne faut que des caractères alphanumériques)';
         return false;
       }
     return true;

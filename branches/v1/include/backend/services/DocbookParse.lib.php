@@ -11,7 +11,6 @@
  */
 
 require_once(PATH_INC_BACKEND_SERVICE.'DocInfos.class.php');
-require_once('PEAR/ErrorStack.php');
 require_once("XML/Tree.php");
 
 /**
@@ -72,7 +71,7 @@ function _prendfiltres($element)
 function _toUtf8($srcenc, $str)
 {
   if(!strcasecmp($srcenc, 'UTF-8'))
-    return $src;
+    return $str;
 
   if(function_exists('iconv'))
     return iconv($srcenc, 'UTF-8', $str);
@@ -92,7 +91,6 @@ function _toUtf8($srcenc, $str)
 function docbookGetArticleInfoFromFile($filename)
 {
   $doc = new DocInfos();
-  $errors = &PEAR_ErrorStack::singleton('OpenWeb_Backend_DocbookParse');
 
   /* Extrait du XML toutes les informations pour remplir la classe Article */
 
@@ -109,7 +107,8 @@ function docbookGetArticleInfoFromFile($filename)
     return array('Impossible de parser le fichier XML ('.$erreur.')');
   }
 
-  $charset = xml_parser_get_option($xmltree->parser, XML_OPTION_TARGET_ENCODING);
+  preg_match('/^\s*<\?xml(.*?)encoding="(.+?)"/', file_get_contents($filename), $charset);
+  $charset = $charset[2];
 
   $doc->repertoire = _toUtf8($charset, trim($article->getAttribute("id")));
   $doc->type = _toUtf8($charset, array_key_exists("role", $article->attributes) ?

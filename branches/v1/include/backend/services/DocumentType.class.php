@@ -8,7 +8,6 @@
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License
  */
 
-require_once('PEAR/ErrorStack.php');
 
 class DocumentType
 {
@@ -18,12 +17,6 @@ class DocumentType
   */
   var $db;
   
-  /**
-   * liste des messages d'erreurs survenus pendant les traitements
-   * @var PEAR_ErrorStack
-   */
-  var $errors;
-
   /**
   * identifiant du type
   * @var char
@@ -96,13 +89,12 @@ class DocumentType
     $this->min = array();
     $this->total_max = -1;
     $this->total_min = 0;
-    $this->errors = &PEAR_ErrorStack::singleton('OpenWeb_Backend_DocumentType');
     if($typeid)
-      $this->load($typeid);
+    	$this->load($typeid);
   }
 
   /**
-   * récupère les infos du type de document à partir de la base de données
+   * recupère les infos du type de document à partir de la base de données
    * @param   string  $type    identifiant ou libellé du type à charger
    * @return  boolean true=tout s'est bien passé
    */
