@@ -16,7 +16,7 @@ Template gourmand pour les gabarits
     <xsl:for-each select="attribute::*">
       <xsl:attribute name="{name()}"><xsl:value-of select="."/></xsl:attribute>
     </xsl:for-each>
-     <xsl:apply-templates mode="template"/>
+    <xsl:apply-templates mode="template"/>
   </xsl:element>
 </xsl:template>
 

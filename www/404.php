@@ -12,7 +12,7 @@ require (PATH_INC_FRONTEND.'front_xhtml.inc.php');
 <!-- Début Texte -->
   <p>Désolé, la page que vous cherchez n'existe pas ou plus.</p>
   <p>Si vous êtes arrivé sur cette page en suivant un lien, merci de
-nous indiquez lequel en écrivant à
+nous indiquer lequel en écrivant à
 <a href="mailto:webmestre%40openweb.eu.org">webmestre@openweb.eu.org</a>.</p>
 <!-- Fin Texte -->
 </body>

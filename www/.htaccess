@@ -1,5 +1,6 @@
 ErrorDocument 404 /404.php
 
 RewriteEngine On
-RewriteRule actualite/?$ /dotclear/index.php/?actualite [L]
-RewriteRule actualite/([0-9]{0,4}.*) /dotclear/index.php/?$1 [L]
+
+RewriteRule actualite/?$ /dotclear/index.php/?actualite [L,QSA]
+RewriteRule actualite/([0-9]{0,4}.*) /dotclear/index.php/?$1 [L,QSA]

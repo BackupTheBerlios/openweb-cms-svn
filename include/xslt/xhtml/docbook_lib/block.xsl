@@ -74,4 +74,9 @@ exclude-result-prefixes="tpl">
 	<blockquote><xsl:call-template name="output.attrs"/><xsl:apply-templates/></blockquote>
 </xsl:template>
 
+<!-- Remerciement -->
+<xsl:template match="ackno">
+	<p><xsl:call-template name="output.attrs"/><xsl:apply-templates/></p>
+</xsl:template>
+
 </xsl:stylesheet>

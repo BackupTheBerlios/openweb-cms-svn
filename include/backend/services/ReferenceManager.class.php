@@ -10,7 +10,8 @@
  * @uses Manager
  */
 
-require_once (PATH_INC_BASECLASS.'Manager.class.php');
+require_once(PATH_INC_BASECLASS.'Manager.class.php');
+require_once(PATH_INC_BASECLASS.'FileLock.class.php');
 
 class ReferenceManager extends Manager
 {
@@ -118,6 +119,7 @@ class ReferenceManager extends Manager
       if($res['num'] != 0)
         return false;
     }
+
 
     /* Maintenant on a le droit de tout casser */
     if($purge)
@@ -244,7 +246,6 @@ class ReferenceManager extends Manager
     $doc_id = intval($doc_id);
     $plus = $moins = $this->getCriterionList();
     foreach($plus as $cri => $entries)
-    {
       $classement = array_keys($this->getEntriesListByDoc($cri, $doc_id));
       $plus[$cri] = isset($crit[$cri]) ? array_diff($crit[$cri], $classement) : array();
       $moins[$cri] = isset($crit[$cri]) ? array_diff($classement, $crit[$cri]) : array();
@@ -305,10 +306,11 @@ class ReferenceManager extends Manager
 
   /**
    * Copie les classements en base vers une représentation XML
-   * @todo sécuriser l'écriture du fichier (collision possible entre deux écritures en parallèle)
    */
   function dumpClassements()
   {
+    $fl = new FileLock();
+    $fl->Open(
     $res = '<?xml version="1.0" encoding="utf-8"?>'."\n<criteres>\n";
     foreach($this->getCriterionList() as $critnam => $critlib)
     {

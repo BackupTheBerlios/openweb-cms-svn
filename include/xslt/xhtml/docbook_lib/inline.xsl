@@ -116,8 +116,33 @@ exclude-result-prefixes="tpl">
 	<xsl:attribute name="title"><xsl:value-of select="."/></xsl:attribute>
 </xsl:template>
 
+<xsl:template match="xref">
+	<a>
+		<xsl:call-template name="output.attrs"/>
+		<xsl:apply-templates/>
+	</a>
+</xsl:template>
+
+<xsl:template match="xref/@linkend">
+	<xsl:attribute name="href">#<xsl:value-of select="."/></xsl:attribute>
+</xsl:template>
+
 <xsl:template match="personname">
 	<xsl:value-of select="concat(firstname, ' ', surname)"/>
+</xsl:template>
+
+<xsl:template match="subscript">
+	<sub>
+		<xsl:call-template name="output.attrs"/>
+		<xsl:apply-templates/>
+	</sub>
+</xsl:template>
+
+<xsl:template match="superscript">
+	<sup>
+		<xsl:call-template name="output.attrs"/>
+		<xsl:apply-templates/>
+	</sup>
 </xsl:template>
 
 </xsl:stylesheet>

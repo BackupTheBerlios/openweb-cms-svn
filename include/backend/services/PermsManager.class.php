@@ -5,7 +5,7 @@
  * @subpackage Services
  * @author Laurent Jouanneau
  * @author Florian Hatat
- * @copyright Copyright © 2003 OpenWeb.eu.org
+ * @copyright Copyright Â© 2003 OpenWeb.eu.org
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License
  * @uses Manager
  */
@@ -15,14 +15,14 @@ require_once (PATH_INC_BASECLASS.'Manager.class.php');
 class PermsManager extends Manager
 {
   /**
-   * Groupe de l'utilisateur pour gérer les droits d'accès
+   * Groupe de l'utilisateur pour gÃ©rer les droits d'accÃ¨s
    * @var string
    */
   var $user_type;
 
   /**
    * Construit un nouvel objet PermsManager
-   * @param object $db Connexion à la base de données
+   * @param object $db Connexion Ã  la base de donnÃ©es
    * @param string $user_type Groupe de l'utilisateur
    */
   function PermsManager(&$db, $user_type)
@@ -32,20 +32,20 @@ class PermsManager extends Manager
   }
 
   /**
-   * Renvoie l'ID d'une action à partir de son nom.
+   * Renvoie l'ID d'une action Ã  partir de son nom.
    * @param string $nom nom symbolique de l'action
    * @return integer ID de l'action
    */
   function getActionId($action)
   {
-    $sql = 'SELECT act_id FROM prm_permsbackend WHERE act_name = '.$this->db->quote($action).' AND uti_type LIKE '.$this->db->quote('%'.$this->user_type.'%');
+    $sql = 'SELECT act_id FROM prm_permsbackend WHERE act_name = '.$this->db->quote($action).' AND uti_type REGEXP '.$this->db->quote('.*['.$this->user_type.'].*');
     $res = $this->_getRow($sql);
     return $res['act_id'];
   }
 
   /**
-   * Renvoie la liste des actions autorisées à partir de l'action $action
-   * @param mixed $action  « action-mère », entier (champ act_id) ou chaîne (act_name)
+   * Renvoie la liste des actions autorisÃ©es Ã  partir de l'action $action
+   * @param mixed $action  Â«Â action-mÃ¨reÂ Â», entier (champ act_id) ou chaÃ®ne (act_name)
    * @return array liste des actions possibles
    */
   function getActions($action)
@@ -53,14 +53,14 @@ class PermsManager extends Manager
     if(!is_int($action))
       $action = $this->getActionId($action);
 
-    $sql = 'SELECT act_id, act_libelle, act_param, act_name FROM prm_permsbackend WHERE act_parent = '.intval($action).' AND uti_type LIKE '.$this->db->quote('%'.$this->user_type.'%').' ORDER BY act_id';
+    $sql = 'SELECT act_id, act_libelle, act_param, act_name FROM prm_permsbackend WHERE act_parent = '.intval($action).' AND uti_type REGEXP '.$this->db->quote('.*['.$this->user_type.'].*').' ORDER BY act_id';
 
     return $this->_getList($sql);
   }
 
   /**
    * Renvoie les informations pour une action
-   * @param mixed $action l'action demandée
+   * @param mixed $action l'action demandÃ©e
    * @return array informations sur l'action
    */
   function getActionInfos($action)
@@ -73,13 +73,13 @@ class PermsManager extends Manager
   }
 
   /**
-   * Vérifie si un utilisateur peut accomplir une action
-   * @param string $action l'action demandée
-   * @return boolean réponse
+   * VÃ©rifie si un utilisateur peut accomplir une action
+   * @param string $action l'action demandÃ©e
+   * @return boolean rÃ©ponse
    */
   function canDoAction($action)
   {
-    $sql = 'SELECT act_libelle FROM prm_permsbackend WHERE act_name = '.$this->db->quote($action).' AND uti_type LIKE '.$this->db->quote('%'.$this->user_type.'%');
+    $sql = 'SELECT act_libelle FROM prm_permsbackend WHERE act_name = '.$this->db->quote($action).' AND uti_type REGEXP '.$this->db->quote('.*['.$this->user_type.'].*');
     $res = $this->_getRow($sql);
     if(isset($res['act_libelle']))
       return true;
@@ -89,9 +89,9 @@ class PermsManager extends Manager
   }
 
   /**
-   * Renvoie l'arbre généalogique d'une action, en commençant par les ancêtres
+   * Renvoie l'arbre gÃ©nÃ©alogique d'une action, en commenÃ§ant par les ancÃªtres
    * @param mixed $action action dont il faut trouver les parents (id ou nom)
-   * @return array lignée
+   * @return array lignÃ©e
    */
   function getActionAncestors($action)
   {
@@ -101,11 +101,11 @@ class PermsManager extends Manager
     $ancestors = array();
     $ancestors[] = $id;
 
-    /* A cette étape non seulement du programme, mais également de mon
-       existence, ce n'est pas sans une certaine émotion que je vais accomplir
-       cet acte hautement symbolique : pour la première fois en sept années
-       passées à gratter du code source j'ai besoin de la boucle do...while.
-       Chère boucle je verse ici une petite larme de joie pour toi. */
+    /* A cette Ã©tape non seulement du programme, mais Ã©galement de mon
+       existence, ce n'est pas sans une certaine Ã©motion que je vais accomplir
+       cet acte hautement symbolique : pour la premiÃ¨re fois en sept annÃ©es
+       passÃ©es Ã  gratter du code source j'ai besoin de la boucle do...while.
+       ChÃ¨re boucle je verse ici une petite larme de joie pour toi. */
     do
     {
       $sql = 'SELECT act_parent FROM prm_permsbackend WHERE act_id = '.intval($id);

@@ -11,6 +11,7 @@
  */
 
 require_once(PATH_INC_BACKEND_SERVICE.'DocInfos.class.php');
+require_once('PEAR/ErrorStack.php');
 require_once("XML/Tree.php");
 
 /**
@@ -68,16 +69,30 @@ function _prendfiltres($element)
   return $res;
 }
 
+function _toUtf8($srcenc, $str)
+{
+  if(!strcasecmp($srcenc, 'UTF-8'))
+    return $src;
+
+  if(function_exists('iconv'))
+    return iconv($srcenc, 'UTF-8', $str);
+
+  if(function_exists('utf8_encode') && !strcasecmp($srcenc, 'ISO-8859-1'))
+    return utf8_encode($str);
+
+  return null;
+}
+
 /**
  * Récupérer toutes les informations dans un fichier DocBook.
  * @param string $filename nom du fichier à analyser
  * @return object DocInfos objet contenant les infos de l'article, ou un tableau de chaînes contenant des messages d'erreurs
- * @todo Mauvaise gestion des erreurs, à refaire.
  * @todo Relire le code, il ne vérifie parfois pas assez les données d'entrées/les erreurs qui peuvent survenir pendant le traitement.
  */
 function docbookGetArticleInfoFromFile($filename)
 {
   $doc = new DocInfos();
+  $errors = &PEAR_ErrorStack::singleton('OpenWeb_Backend_DocbookParse');
 
   /* Extrait du XML toutes les informations pour remplir la classe Article */
 
@@ -94,10 +109,12 @@ function docbookGetArticleInfoFromFile($filename)
     return array('Impossible de parser le fichier XML ('.$erreur.')');
   }
 
-  $doc->repertoire = utf8_encode(trim($article->getAttribute("id")));
-  $doc->type = utf8_encode(array_key_exists("role", $article->attributes) ?
+  $charset = xml_parser_get_option($xmltree->parser, XML_OPTION_TARGET_ENCODING);
+
+  $doc->repertoire = _toUtf8($charset, trim($article->getAttribute("id")));
+  $doc->type = _toUtf8($charset, array_key_exists("role", $article->attributes) ?
                  $article->getAttribute("role") : "article");
-  $doc->lang = utf8_encode(array_key_exists("lang", $article->attributes) ?
+  $doc->lang = _toUtf8($charset, array_key_exists("lang", $article->attributes) ?
                  $article->getAttribute("lang") : "fr");
 
   $artinfonode = getElementsByTagName($article, "articleinfo");
@@ -115,30 +132,30 @@ function docbookGetArticleInfoFromFile($filename)
                  (count($surnames) ? ucfirst(trim(tree2text($surnames[0])))
                    : "");
   }
-  $doc->auteurs = utf8_encode(implode(', ', $auteurs));
+  $doc->auteurs = _toUtf8($charset, implode(', ', $auteurs));
 
   $doc->classement = array();
 
   foreach($artinfonode[0]->children as $child)
   {
     /* Récupération des balises <title>, <pubdate> et <date> */
-    if(!strcmp($child->name, "title")) $doc->titre = utf8_encode(tree2text($child));
-    if(!strcmp($child->name, "titleabbrev")) $doc->titremini = utf8_encode(tree2text($child));
-    if(!strcmp($child->name, "pubdate")) $doc->pubdate = utf8_encode(tree2text($child));
-    if(!strcmp($child->name, "date")) $doc->update = utf8_encode(tree2text($child));
+    if(!strcmp($child->name, "title")) $doc->titre = _toUtf8($charset, tree2text($child));
+    if(!strcmp($child->name, "titleabbrev")) $doc->titremini = _toUtf8($charset, tree2text($child));
+    if(!strcmp($child->name, "pubdate")) $doc->pubdate = _toUtf8($charset, tree2text($child));
+    if(!strcmp($child->name, "date")) $doc->update = _toUtf8($charset, tree2text($child));
 
     if(!strcmp($child->name, "subjectset"))
     {
       foreach(getElementsByTagName($child, "subject") as $subjnode)
       {
-        $attribute = utf8_encode($subjnode->getAttribute("role"));
+        $attribute = _toUtf8($charset, $subjnode->getAttribute("role"));
         $doc->classement[$attribute] = array();
         foreach(getElementsByTagName($subjnode, "subjectterm") as $entry)
-          $doc->classement[$attribute][] = utf8_encode(tree2text($entry));
+          $doc->classement[$attribute][] = _toUtf8($charset, tree2text($entry));
       }
     }
     if(!strcmp($child->name, "abstract"))
-      $doc->accroche = utf8_encode(tree2text($child));
+      $doc->accroche = _toUtf8($charset, tree2text($child));
   }
 
   return $doc;

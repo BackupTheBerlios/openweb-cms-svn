@@ -46,7 +46,7 @@ function show_switcher()
 
   if(OW_SWITCHER_ACTIVATE)
   {
-    $text .= "<form action=\"".$_SERVER["SCRIPT_NAME"]."\" method=\"get\" id=\"switcher\">\n";
+    $text .= "<form action=\"".$_SERVER["REQUEST_URI"]."\" method=\"get\" id=\"switcher\">\n";
     $text .= "  <div id=\"habillage\">\n";
     $text .= "    <label for=\"set\">Choisir un habillage&nbsp;:</label>\n";
     $text .= "    <select id=\"set\" name=\"set\">\n";

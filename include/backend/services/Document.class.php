@@ -4,28 +4,29 @@
  * @package OpenWeb-CMS
  * @author Laurent Jouanneau
  * @author Florian Hatat
- * @copyright Copyright © 2003 OpenWeb.eu.org
+ * @copyright Copyright Â© 2003 OpenWeb.eu.org
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License
  */
 
 require_once(PATH_INC_BACKEND_SERVICE."DocumentType.class.php");
 require_once(PATH_INC_BACKEND_SERVICE."ReferenceManager.class.php");
-require_once(PATH_INC_BACKEND_SERVICE."DocbookParse.lib.php");
 require_once(PATH_INC_BACKEND_SERVICE."DocInfos.class.php");
 require_once(PATH_INC_BACKEND_SERVICE."OutputFactory.lib.php");
+require_once(PATH_INC_BASECLASS.'FileLock.class.php');
+require_once('PEAR/ErrorStack.php');
 
 class Document
 {
   /**
-   * identifiant du document dans la base de données
+   * identifiant du document dans la base de donnÃ©es
    * @var integer
    */
   var $id;
 
   /**
    * type de document
-   * informations sur le type du document, obtenues à partir de la base
-   * de données
+   * informations sur le type du document, obtenues Ã  partir de la base
+   * de donnÃ©es
    * @var object DocumentType
    */
   var $type;
@@ -37,27 +38,27 @@ class Document
   var $infos;
 
   /**
-   * état de la publication du document
+   * Ã©tat de la publication du document
    * @var integer
    */
   var $etat = -99;
 
   /**
    * liste des messages d'erreurs survenus pendant les traitements
-   * @var array
+   * @var PEAR_ErrorStack
    */
-  var $errors = array();
+  var $errors;
 
   /** 
-   * connexion à la base de données
-   * @var object PEAR::DB $db
+   * connexion Ã  la base de donnÃ©es
+   * @var object PEAR::DB
    */
   var $db;
 
   /**
    * Constructeur du document
-   * @param object $db connexion à la base de données
-   * @param mixed $doc_id id ou nom du document à ouvrir, null pour ne rien ouvrir
+   * @param object $db connexion Ã  la base de donnÃ©es
+   * @param mixed $doc_id id ou nom du document Ã  ouvrir, null pour ne rien ouvrir
    */
   function Document(&$db, $doc_id = null)
   {
@@ -65,7 +66,7 @@ class Document
     $this->ref = new ReferenceManager($this->db);
 
     $this->id = $this->type = $this->infos = null;
-    $this->errors = array();
+    $this->errors = &PEAR_ErrorStack::singleton('OpenWeb_Backend_Document');
 
     if($doc_id !== null)
       $this->load($doc_id);
@@ -74,34 +75,37 @@ class Document
   }
 
   /**
-   * récupère les infos du document à partir d'un fichier DocBook
+   * rÃ©cupÃ¨re les infos du document Ã  partir d'un fichier DocBook
    * @param string $fichier nom du fichier
-   * @return boolean <code>true</code> lorsque tout s'est bien passé
+   * @return boolean <code>true</code> lorsque tout s'est bien passÃ©
    */
   function setContentFromDocbook($fichier)
   {
-    if(is_array($this->infos = docbookGetArticleInfoFromFile($fichier)))
-    {
-      $this->errors = array_merge($this->errors, $this->infos);
-      $this->infos = null;
-      return false;
-    }
+    require_once(PATH_INC_BACKEND_SERVICE."DocbookParse.lib.php");
 
+    $errors = &PEAR_ErrorStack::singleton('OpenWeb_Backend_DocbookParse');
+    $errors->pushCallback(array(&$this, '_repackageErrorStack'));
+    
+    $this->infos = docbookGetArticleInfoFromFile($fichier);
+    $this->infos->verifyRepertoire();
+
+    $errors->popCallback();
+
+    if($this->errors->hasErrors())
+      return false;
+
+    $errors = &PEAR_ErrorStack::singleton('OpenWeb_Backend_DocumentType');
+    $errors->pushCallback(array(&$this, '_repackageErrorStack'));
+    
     $this->type = new DocumentType($this->infos->type);
-    if(!$this->type)
-    {
-      $this->errors[] = "type de document inconnu";
-      return false;
-    }
 
-    if(!$this->infos->verifyRepertoire())
-    {
-      $this->errors[] = 'répertoire indéfini';
-      return false;
-    }
+    $errors->popCallback();
 
-    /* lorsque l'article est tout nouveau, on vérifie en base si le
-       nom du répertoire est unique */
+    if($this->errors->hasErrors())
+      return false;
+
+    /* lorsque l'article est tout nouveau, on vÃ©rifie en base si le
+       nom du rÃ©pertoire est unique */
     $newdoc = false;
 
     if(!is_int($this->id))
@@ -111,65 +115,69 @@ class Document
       $rep = $this->db->getRow($sql);
       if(DB::isError($rep))
       {
-        $this->errors[] = "impossible de lire depuis la base de données";
+        $this->errors->push(17); /*impossible de lire depuis la base de donnÃ©es*/
 	return false;
       }
 
       if(intval($rep['cnt']) > 0)
       {
-        $this->errors[] = "donnez un autre nom de répertoire : ".$this->infos->repertoire." est déjà utilisé";
+        $this->errors->push(17); /*"donnez un autre nom de rÃ©pertoireÂ : ".$this->infos->repertoire." est dÃ©jÃ  utilisÃ©";*/
         return false;
       }
     }
 
     if(in_array($this->type->repertoire.$this->infos->repertoire, $GLOBALS['OW_FORBIDDEN_DIR']))
     {
-      $this->errors[] = "nom de répertoire interdit";
+      $this->errors->push(17);/*"nom de rÃ©pertoire interdit pas l'admin*/
       return false;
     }
 
-    // vérification que le répertoire n'est pas verrouillé
     $destdir = PATH_SITE_ROOT.$this->getDocumentPath();
-    if(file_exists($destdir.".lock"))
-    {
-      $this->errors[] = 'verrou existant, aucune action possible';
-      return false;
-    }
 
-    // vérification des propriétes
-    if(!$this->_verifyProperties())
+    // vÃ©rification des propriÃ©tes
+    $this->_validateProperties();
+    if($this->errors->hasErrors())
       return false;
 
-    if(count($this->errors) != 0)
-      return false;
-
-    // création du répertoire de l'article dans temp
+    // crÃ©ation du rÃ©pertoire de l'article dans temp
     umask(0022);
-    touch($destdir.".lock");
-    if(!file_exists($destdir))
+
+    if(file_exists($destdir))
     {
-      mkdir($destdir, 0755);
-      mkdir($destdir."/annexes", 0755);
-    }
-
-    $docbook_name = $this->getDocumentFileName('docbook');
-
-    // copie du fichier uploadé
-    rename($fichier, $docbook_name);
-
-    chmod($docbook_name, 0644);
-
-    // enregistrement en base des différentes infos
-    if(count($this->errors) == 0)
-    {
-      $this->_saveDb();
-      unlink($destdir.".lock");
+      if(!is_dir($destdir))
+        $this->errors->push(17); /* @todo error code */
     }
     else
+      mkdir($destdir, 0755);
+
+    $annexes = $destdir."/annexes";
+    if(file_exists($annexes))
     {
-      unlink($destdir.".lock");
-      return false;
+      if(!is_dir($annexes))
+        $this->errors->push(17); /* @todo error code */
     }
+    else
+      mkdir($annexes, 0755);
+
+    $dbkfile = $this->getDocumentFileName('docbook');
+
+    /* @todo traiter les erreurs ici */
+    $fl = new FileLock();
+    ignore_user_abort(true);
+
+    $fp = $fl->Open($dbkfile);
+    fwrite($fp, file_get_contents($fichier));
+    $fl->Close($fp);
+
+    ignore_user_abort(false);
+    chmod($dbkfile, 0644);
+
+    if($this->errors->hasErrors())
+      return false;
+
+    // enregistrement en base des diffÃ©rentes infos
+    $this->_saveDb();
+
     if($newdoc)
     {
       $etat = $this->ref->getStatusInfos('OW_STATUS_TEMP');
@@ -182,14 +190,14 @@ class Document
     // conversion du fichier dans les autres formats
     $this->generation();
 
-    return true;
+    return !$this->errors->hasErrors();
   }
 
   /**
-   * retourne le chemin absolu et complet du répertoire du document, 
-   * en fonction de son etat ou de l'etat indiqué en paramètre
-   * @param   integer $etat   état à considérer
-   * @return  string  chemin du répertoire du document
+   * retourne le chemin absolu et complet du rÃ©pertoire du document, 
+   * en fonction de son Ã©tat ou de l'Ã©tat indiquÃ© en paramÃ¨tre
+   * @param   integer $etat   Ã©tat Ã  considÃ©rer
+   * @return  string  chemin du rÃ©pertoire du document
    */
   function getDocumentPath($etat = null)
   {
@@ -213,8 +221,8 @@ class Document
   }
 
   /**
-   * retourne le nom du fichier contenant le document, en fonction du format demandé
-   * @param   string  $type   nom du format demandé
+   * retourne le nom du fichier contenant le document, en fonction du format demandÃ©
+   * @param   string  $type   nom du format demandÃ©
    * @return  string  chemin complet du fichier
    */
   function getDocumentFileName($type = 'docbook')
@@ -230,7 +238,7 @@ class Document
   }
 
   /**
-   * retourne la liste des noms de fichiers pour les différents formats du document
+   * retourne la liste des noms de fichiers pour les diffÃ©rents formats du document
    * @return array la liste des formats
    */
   function getDocumentFormats()
@@ -247,34 +255,11 @@ class Document
   }
 
   /**
-   * change l'état du document
-   * @param   integer $next_etat nouvel état du document
+   * change l'Ã©tat du document
+   * @param   integer $next_etat nouvel Ã©tat du document
    */
   function changeEtat($next_etat)
   {
-    /**
-     * efface un fichier ou le contenu d'un répertoire
-     * @param   string  $file   nom du fichier à supprimer
-     */
-    function delete_dir($file)
-    {
-      if (file_exists($file))
-      {
-        chmod($file, 0777);
-        if(is_dir($file))
-        {
-          $handle = opendir($file);
-          while($filename = readdir($handle))
-            if($filename != "." && $filename != "..")
-              delete_dir($file."/".$filename);
-          closedir($handle);
-          rmdir($file);
-        }
-        else
-          unlink($file);
-      }
-    }
-
     $next_etat = intval($next_etat);
 
     $tmp = $this->ref->getStatusInfos('OW_STATUS_INEXISTANT');
@@ -285,11 +270,11 @@ class Document
     {
       if($next_etat != $inex_etat)
       {
-        // mise à jour en base
+        // mise Ã  jour en base
         $sql = 'UPDATE doc_document SET doc_etat = '.$next_etat.' WHERE doc_id = '.$this->id;
         $this->db->query($sql);
 
-        // changement de répertoire
+        // changement de rÃ©pertoire
 	$dir1 = $this->ref->getStatusInfos($next_etat); /* PHP sapu ! */
 	$dir2 = $this->ref->getStatusInfos($this->etat);
         if($dir1['dir'] != $dir2['dir'])
@@ -315,7 +300,7 @@ class Document
   }
 
   /**
-   * Génère tous les fichiers du document à partir du DocBook
+   * GÃ©nÃ¨re tous les fichiers du document Ã  partir du DocBook
    */
   function generation()
   {
@@ -325,13 +310,13 @@ class Document
     if($this->id !== null)
       foreach($outputInfos['docbook'] as $out => $inf)
         if(!outputMake($dbk, 'docbook', $out))
-          $this->errors[] = "erreur lors de la génération du format ".$inf['description']." ($out)";
+          $this->errors->push(17); /* "erreur lors de la gÃ©nÃ©ration du format ".$inf['description']." ($out)";*/
   }
 
   /**
-   * charge les données du document à partir de la base de données
-   * @param mixed $doc_id id ou nom du document à charger
-   * @return boolean vrai si les informations ont été lues sans erreurs
+   * charge les donnÃ©es du document Ã  partir de la base de donnÃ©es
+   * @param mixed $doc_id id ou nom du document Ã  charger
+   * @return boolean vrai si les informations ont Ã©tÃ© lues sans erreurs
    */
   function load($doc_id)
   {
@@ -349,20 +334,20 @@ class Document
       $sql .= 'AND doc_repertoire = '.$this->db->quote($doc_id);
     else
     {
-      $this->errors[] = 'le document doit être désigné par son id ou le nom de son répertoire';
+      $this->errors->push(17); /*'le document doit Ãªtre dÃ©signÃ© par son id ou le nom de son rÃ©pertoire';*/
       return false;
     }
 
     $res = $this->db->getRow($sql);
     if(DB::isError($res))
     {
-      $this->errors[] = 'impossible d\'accéder à la base de données';
+      $this->errors->push(17);/*'impossible d\'accÃ©der Ã  la base de donnÃ©es';*/
       return false;
     }
 
     if(count($res) == 0)
     {
-      $this->errors[] = 'le document n\'existe pas dans la base de données';
+      $this->errors->push(17);/*'le document n\'existe pas dans la base de donnÃ©es';*/
       return false;
     }
 
@@ -409,9 +394,11 @@ class Document
   }
 
   /**
-   * ajout d'une annexe à un document
+   * ajout d'une annexe Ã  un document
    * @param   string  $fichier_temp   nom du fichier source (temporaire dans le cas d'un upload)
    * @param   string  $nom_fichier   nom du fichier cible
+   * @todo voir s'il faut verrouiller le fichier pendant l'Ã©criture
+   * @todo renvoyer les erreurs s'il s'en produit, et s'assurer qu'on ne fait rien si par exemple le rÃ©pertoire n'est pas accessible en Ã©criture
    */
   function ajoutAnnexe($fichier_temp, $nom_fichier)
   {
@@ -423,7 +410,8 @@ class Document
 
    /**
    * suppression d'un fichier annexe
-   * @param   string  $fichier   nom du fichier à supprimer
+   * @param   string  $fichier   nom du fichier Ã  supprimer
+   * @todo renvoyer des erreurs !
    */
   function supprimerAnnexe($fichier)
   {
@@ -432,25 +420,25 @@ class Document
     {
       foreach($fichier as $fic)
       {
-        $fic = basename($fic); // securité
+        $fic = basename($fic); // securitÃ©
         if(file_exists($dir_name.$fic))
           unlink($dir_name.$fic);
       }
     }
     else
     {
-      $fichier = basename($fichier); // securité
+      $fichier = basename($fichier); // securitÃ©
       if(file_exists($dir_name.$fichier))
         unlink($dir_name.$fichier);
     }
   }
 
 
-/*** Méthodes privées ***/
+/*** MÃ©thodes privÃ©es ***/
 
   /**
-   * méthode principale pour l'enregistrement en base
-   * selon l'id, met à jour ou ajoute les informations du document en base
+   * mÃ©thode principale pour l'enregistrement en base
+   * selon l'id, met Ã  jour ou ajoute les informations du document en base
    * @access private
    */
   function _saveDB()
@@ -462,7 +450,7 @@ class Document
   }
 
   /**
-   * met à jour les infos du document en base de données
+   * met Ã  jour les infos du document en base de donnÃ©es
    * @access private
    */
   function _updateDB()
@@ -486,7 +474,7 @@ class Document
   }
 
   /**
-   * ajoute le document dans la base de données
+   * ajoute le document dans la base de donnÃ©es
    * @access private
    */
   function _createDB()
@@ -514,7 +502,10 @@ class Document
 
     $res = $this->db->query($sql);
     if(DB::isError($res))
-      trigger_error($res->userinfo.' ('.get_class($this).'::_createDB)', E_USER_ERROR);
+    {
+      $this->errors->push(17); /* erreur sql, et ajouter $res->userinfo */
+      return;
+    }
 
     $res = $this->db->getRow('SELECT doc_id FROM doc_document WHERE doc_repertoire = '.$this->db->quote($this->infos->repertoire));
     $this->id = $res['doc_id'];
@@ -523,20 +514,23 @@ class Document
   }
 
   /**
-   * vérifie les propriétes du document, leur présence et leur validité
-   * à surcharger eventuellement dans les classes descendantes, pour tenir compte des spécifités de chaque type de document
+   * vÃ©rifie les propriÃ©tes du document, leur prÃ©sence et leur validitÃ©
+   * Ã  surcharger eventuellement dans les classes descendantes, pour tenir compte des spÃ©cifitÃ©s de chaque type de document
    * @return boolean  true= tout est ok
    * @access private
    */
-  function _verifyProperties()
+  function _validateProperties()
   {
-    $this->infos->errors = array();
+    $errors = &PEAR_ErrorStack::singleton('OpenWeb_Backend_DocbookParse');
+    $errors->getErrors(true);
+    $errors->pushCallback(array(&$this, '_repackageErrorStack'));
     $res = $this->infos->verify();
-    $this->errors = array_merge($this->errors, $this->infos->errors);
-    if(!$res)
+    $errors->popCallback();
+
+    if($this->errors->hasErrors())
       return false;
 
-    $classement = $this->infos->classement;
+    $classement = &$this->infos->classement;
 
     if($this->type->isintro)
       foreach($classement as $crit => $entries)
@@ -544,17 +538,49 @@ class Document
           if($nom == $this->infos->repertoire)
             unset($classement[$crit][$nom]);
 
-    if(!$this->ref->checkClassements($classement))
-    {
-      $this->errors[] = 'classement invalide';
+    $errors = &PEAR_ErrorStack::singleton('OpenWeb_Backend_ReferenceManager');
+    $errors->pushCallback(array(&$this, '_repackageErrorStack'));
+    $this->ref->checkClassements($classement);
+    $errors->popCallback();
+
+    if($this->errors->hasErrors())
       return false;
+
+    $errors = &PEAR_ErrorStack::singleton('OpenWeb_Backend_DocumentType');
+    $errors->pushCallback(array(&$this, '_repackageErrorStack'));
+    $this->type->check($this->infos);
+    $errors->popCallback();
+
+    return $this->errors->hasErrors();
+  }
+
+  function _repackageErrorStack($err)
+  {
+    $this->errors->push(17, 'error', array(), false, $err);
+    return PEAR_ERRORSTACK_IGNORE;
+  }
+}
+
+/**
+ * efface un fichier ou le contenu d'un rÃ©pertoire
+ * @param   string  $file   nom du fichier Ã  supprimer
+ */
+function delete_dir($file)
+{
+  if (file_exists($file))
+  {
+    chmod($file, 0777);
+    if(is_dir($file))
+    {
+      $handle = opendir($file);
+      while($filename = readdir($handle))
+        if($filename != "." && $filename != "..")
+          delete_dir($file."/".$filename);
+      closedir($handle);
+      rmdir($file);
     }
-
-    $res = $this->type->check($this->infos);
-    if(!$res)
-      $this->errors = array_merge($this->errors, $res);
-
-    return (count($this->errors) == 0);
+    else
+      unlink($file);
   }
 }
 

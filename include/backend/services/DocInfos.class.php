@@ -1,21 +1,24 @@
 <?php
 /**
- * Méta-données d'un article
- * Vérifie et regroupe toutes les méta-données à propos d'un article.
+ * MÃ©ta-donnÃ©es d'un article
+ * VÃ©rifie et regroupe toutes les mÃ©ta-donnÃ©es Ã  propos d'un article.
  * @package OpenWeb-CMS
  * @author Florian Hatat
  * @copyright 2003 OpenWeb.eu.org
  */
 
+require_once('PEAR/ErrorStack.php');
+
 class DocInfos {
 
   /**
-   * libellé du type de document
+   * libellÃ© du type de document
+   * @var string
    */
   var $type = 'article';
 
   /**
-   * Noms des auteurs séparés par des virgules
+   * Noms des auteurs sÃ©parÃ©s par des virgules
    * @var string
    */
   var $auteurs;
@@ -27,21 +30,22 @@ class DocInfos {
   var $titre;
 
   /**
-   * Titre abrégé
+   * Titre abrÃ©gÃ©
+   * @var string
    */
   var $titremini;
 
   /**
-   * nom du répertoire de l'article
-   * Celui-ci est unique et peut servir à identifier l'article dans la base
-   * Il ne doit contenir que des caractères alphanumériques ou l'underscore.
+   * nom du rÃ©pertoire de l'article
+   * Celui-ci est unique et peut servir Ã  identifier l'article dans la base
+   * Il ne doit contenir que des caractÃ¨res alphanumÃ©riques ou l'underscore.
    * @var string
    */
   var $repertoire;
 
   /**
    * Date de publication
-   * Date de la première publication sur le site, sous la forme d'un
+   * Date de la premiÃ¨re publication sur le site, sous la forme d'un
    * tableau contenant les indices "year", "month" et "day".
    * @var array
    */
@@ -49,7 +53,7 @@ class DocInfos {
 
   /**
    * Date de modification
-   * Date de la dernière modification majeure de l'article.
+   * Date de la derniÃ¨re modification majeure de l'article.
    * @var array
    * @see $pubdate
    */
@@ -58,8 +62,8 @@ class DocInfos {
   /**
    * Sujet
    * Triplet de classement de l'article par Profil (indice "profil"),
-   * Technologie ("technologie") et theme ("theme"). La validité
-   * des entrées est vérifiée par la partie SQL.
+   * Technologie ("technologie") et theme ("theme"). La validitÃ©
+   * des entrÃ©es est vÃ©rifiÃ©e par la partie SQL.
    * @var array
    */
   var $classement;
@@ -77,27 +81,43 @@ class DocInfos {
   var $lang;
 
   /**
+   * Erreurs gÃ©nÃ©rÃ©es par les mÃ©thodes de la classe
+   */
+  var $errors
+
+  /**
    * Constructeur DocInfos
    */
   function DocInfos()
   {
     $this->classement = array();
+    $this->errors = &PEAR_ErrorStack::singleton('OpenWeb_Backend_DocInfos');
+    $this->errors->setErrorMessageTemplate(
+      array(
+        1 => "Date incorrecte",
+        2 => "PrÃ©cisez au moins un auteur",
+        3 => "Le titre ne doit pas Ãªtre vide",
+        4 => "Nom de rÃ©pertoire invalide"
+    ));
   }
 
   /**
-   * Vérifie le format des informations
+   * VÃ©rifie le format des informations
    * @return boolean
    */
   function verify()
   {
-    return $this->verifyPubdate() && $this->verifyUpdate() &&
-           $this->verifyAuteurs() && $this->verifyTitre() &&
-           $this->verifyRepertoire();
+    $this->verifyPubdate();
+    $this->verifyUpdate();
+    $this->verifyAuteurs();
+    $this->verifyTitre();
+    $this->verifyRepertoire();
+    return !$this->errors->hasErrors();
   }
 
   /**
-   * Vérifie la date
-   * Vérifie que la date passée en paramètre est bien au format AAAA-MM-JJ
+   * VÃ©rifie la date
+   * VÃ©rifie que la date passÃ©e en paramÃ¨tre est bien au format AAAA-MM-JJ
    * @return boolean
    * @access private
    */
@@ -110,68 +130,69 @@ class DocInfos {
   }
 
   /**
-   * Vérifie la date de publication
+   * VÃ©rifie la date de publication
    * @return boolean
    */
   function verifyPubdate()
   {
     $res = $this->_verifyDate($this->pubdate);
     if(!$res)
-      $this->errors[] = "date de publication invalide";
+      $this->errors->push(1);
     return $res;
   }
 
   /**
-   * vérifie la date de modification
+   * vÃ©rifie la date de modification
    * @return boolean
    */
   function verifyUpdate()
   {
     $res = $this->_verifyDate($this->pubdate);
     if(!$res)
-      $this->errors[] = "date de modification invalide";
+      $this->errors->push(1);
     return $res;
   }
 
   /**
-   * vérification des auteurs
+   * vÃ©rification des auteurs
    * @return boolean  indique si ok ou pas
    */
   function verifyAuteurs()
   {
     if($this->auteurs == '' )
     {
-      $this->errors[] = "précisez au moins un auteur";
+      $this->errors->push(2);
       return false;
     }
     return true;
   }
 
   /**
-   * vérification du titre
+   * vÃ©rification du titre
    * @return boolean
    */
   function verifyTitre()
   {
     if($this->titre == '')
     {
-      $this->errors[] = "le titre ne doit pas être vide";
+      $this->errors->push(3);
       return false;
     }
     return true;
   }
 
   /**
-   * vérification du répertoire
+   * vÃ©rification du rÃ©pertoire
    * @return boolean
    */
   function verifyRepertoire()
   {
     $nbcar = strlen($this->repertoire);
+
     for($i = 0; $i < $nbcar; $i++)
       if(!(ctype_alnum($this->repertoire{$i}) || $this->repertoire{$i} == '_'))
       {
-        $this->errors[] = 'nom de répertoire incorrect (il ne faut que des caractères alphanumériques)';
+        $this->errors->push(4);
         return false;
       }
     return true;

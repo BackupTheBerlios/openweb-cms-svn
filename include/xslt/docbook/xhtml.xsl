@@ -52,12 +52,15 @@ Templates mangeurs d'attributs
 
 <!-- 7. The global structure of an HTML document -->
 
-<xsl:template match="*" mode="entete" priority="-10"/>
+<xsl:template match="*" mode="entete" priority="-10">
+  <xsl:apply-templates mode="entete"/>
+</xsl:template>
+<xsl:template match="text()" mode="entete" priority="-10"/>
 
 <xsl:template match="html:html">
-	<article>
+	<article role="article">
 		<xsl:call-template name="default.attrs"/>
-		<xsl:apply-templates select="html:head/html:meta" mode="entete"/>
+		<xsl:apply-templates mode="entete"/>
 		<xsl:apply-templates select="html:body/@class"/>
 		<xsl:apply-templates select="html:body/html:h1"/>
 		<xsl:apply-templates/>
