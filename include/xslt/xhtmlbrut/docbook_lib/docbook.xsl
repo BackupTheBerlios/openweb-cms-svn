@@ -14,11 +14,11 @@ exclude-result-prefixes="tpl">
 ===========================================================
 -->
 <xsl:template name="output.attrs">
-  <xsl:apply-templates select="attribute::*"/>
+  <xsl:apply-templates select="@*"/>
 </xsl:template>
 
 <!-- Template glouton pour attributs à jeter -->
-<xsl:template match="attribute::*" priority="-10"/>
+<xsl:template match="@*" priority="-10"/>
 
 <!-- Attributs généraux toujours recopiés -->
 <xsl:template match="@lang">
@@ -40,41 +40,42 @@ Structure générale du document
 -->
 
 <xsl:template match="article">
-  <xsl:apply-templates/>
+	<xsl:apply-templates/>
 </xsl:template>
 
-<xsl:template match="abstract" mode="entete"></xsl:template>
+<xsl:template match="abstract" mode="entete"/>
+<xsl:template match="title" mode="entete"/>
 
-<xsl:template match="title" mode="entete"></xsl:template>
 
 <xsl:template match="article/title|section/title">
-  <xsl:variable name="niveau" select="count(ancestor-or-self::section)+2"/>
-  <xsl:variable name="element">
-    <xsl:choose>
-      <xsl:when test="$niveau > 6">h6</xsl:when>
-      <xsl:otherwise>h<xsl:value-of select="$niveau"/></xsl:otherwise>
-    </xsl:choose>
-  </xsl:variable>
-  <xsl:element name="{$element}">
-    <xsl:call-template name="output.attrs"/>
-    <xsl:apply-templates/>
-  </xsl:element>
+	<xsl:variable name="niveau" select="count(ancestor-or-self::section)+2"/>
+	<xsl:variable name="element">
+		<xsl:choose>
+			<xsl:when test="$niveau > 6">h6</xsl:when>
+			<xsl:otherwise>h<xsl:value-of select="$niveau"/></xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+	<xsl:element name="{$element}">
+		<xsl:call-template name="output.attrs"/>
+		<xsl:apply-templates/>
+	</xsl:element>
 </xsl:template>
 
+<!-- TODO texte dans la feuille XSLT, mauvais pour l'i18n -->
 <xsl:template match="abstract/para">
-  <h2>En bref</h2>
-  <p>
-    <xsl:call-template name="output.attrs"/>
-    <xsl:apply-templates/>
-  </p>
-  <hr />
+	<h2>En bref</h2>
+	<p>
+		<xsl:call-template name="output.attrs"/>
+		<xsl:apply-templates/>
+	</p>
+	<hr />
 </xsl:template>
 
 <xsl:template match="article/subtitle">
-  <h2>
-    <xsl:call-template name="output.attrs"/>
-    <xsl:apply-templates/>
-  </h2>
+	<h2>
+		<xsl:call-template name="output.attrs"/>
+		<xsl:apply-templates/>
+	</h2>
 </xsl:template>
 
 <xsl:include href="articleinfo.xsl"/>

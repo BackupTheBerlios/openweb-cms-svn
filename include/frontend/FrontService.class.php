@@ -27,16 +27,16 @@ class FrontService extends Manager
    */
   function getListPage($params, &$infosPages)
   {
-    $sql = 'SELECT a.doc_id as id, doc_titre as titre, doc_auteurs as auteurs,
-            doc_repertoire as repertoire,
+    $sql = 'SELECT d.doc_id as id, doc_titre as titre, doc_auteurs as auteurs,
+            CONCAT(typ_repertoire, "/", doc_repertoire) as repertoire,
             doc_accroche as accroche, doc_date_modification ';
-    $from = ' FROM doc_document a ';
+    $from = ' FROM doc_document d NATURAL JOIN typ_typedocument ';
     $where = ' WHERE doc_etat > 0 ';
     $order = ' ORDER BY doc_date_modification DESC ';
 
 
     if(isset($params['type']) && strlen($params['type']) == 1)
-      $where .= ' AND typ_id = \''.trim($params['type']).'\'';
+      $where .= ' AND d.typ_id = \''.trim($params['type']).'\'';
     if(isset($params['repertoire']))
       $where .= ' AND doc_repertoire = '.$this->db->quote($params['repertoire']);
 
@@ -55,7 +55,7 @@ class FrontService extends Manager
         $res = $this->_getRow($tmpsql);
         $intro = $res['doc_id'];
 	$from .= ", document_criteres c$i";
-	$where .= " AND a.doc_id = c$i.doc_id AND c$i.cri_id = ".intval($crit)." AND c$i.intro_id = ".intval($intro);
+	$where .= " AND d.doc_id = c$i.doc_id AND c$i.cri_id = ".intval($crit)." AND c$i.intro_id = ".intval($intro);
 	$i++;
       }
 
@@ -74,6 +74,7 @@ class FrontService extends Manager
 
     foreach($liste as $k => $art)
     {
+      $liste[$k]['repertoire'] = preg_replace('/\/+/', '/', '/'.$art['repertoire'].'/');
       $liste[$k]['classement'] = $this->getClassements($art['id']);
       $liste[$k]['date'] = $this->_getDateFr($art['doc_date_modification']);
     }
@@ -84,6 +85,7 @@ class FrontService extends Manager
    * Transforme une date base en date fr
    * @param   string  $dt la date au format base de donnée
    * @return  string  la date au format fr
+   * @todo à virer pour les versions suivantes (i18n...)
    */
   function _getDateFr($dt) 
   {
@@ -95,7 +97,6 @@ class FrontService extends Manager
    * Récupère le classement d'un document
    * @param integer $docid id du document cherché
    * @return array les classements
-   * @todo traiter le cas où titre_mini est NULL (remplacer par doc_titre)
    */
   function getClassements($doc_id)
   {
@@ -117,16 +118,15 @@ class FrontService extends Manager
    * Récupère le chemin de stockage d'un document
    * @param integer $doc_id id du document concerné
    * @return string chemin, relatif à la racine du site
-   * @todo virer les / dans typ_repertoire dans la base et l'ajouter ici
    * @see Document::getDocumentPath
    */
-  function getDocumentPath($doc_id)
+  function getDocumentPath($doc_rep)
   {
-    $sql = "SELECT CONCAT(typ_repertoire, doc_repertoire) as rep
+    $sql = "SELECT CONCAT(typ_repertoire, '/', doc_repertoire) as rep
             FROM doc_document NATURAL JOIN typ_typedocument
-            WHERE doc_id = ".intval($doc_id);
+            WHERE doc_repertoire = ".$this->db->quote($doc_rep);
     $res = $this->_getRow($sql);
-    return $res['rep'];
+    return preg_replace('/\/+/', '/', '/'.$res['rep'].'/');
   }
 }
 

@@ -5,74 +5,46 @@ xmlns:tpl="http://openweb.eu.org/tpl"
 xmlns="http://www.w3.org/1999/xhtml"
 exclude-result-prefixes="tpl">
 
-<xsl:template match="subject[@role='profil']" mode="entete">
-  <meta name="DC.Audience"><xsl:attribute name="content"><xsl:apply-templates select="subjectterm" mode="entete"/></xsl:attribute></meta>
+<xsl:template match="subjectset" mode="entete">
+	<meta name="DC.Subject"><xsl:attribute name="content"><xsl:apply-templates select=".//subjectterm" mode="entete"/></xsl:attribute></meta>
 </xsl:template>
 
-<xsl:template match="subject[@role='technologie']" mode="entete">
-  <meta name="DC.ResourceType"><xsl:attribute name="content"><xsl:apply-templates select="subjectterm" mode="entete"/></xsl:attribute></meta>
-</xsl:template>
-
-<xsl:template match="subject[@role='theme']" mode="entete">
-  <meta name="DC.Subject"><xsl:attribute name="content"><xsl:apply-templates select="subjectterm" mode="entete"/></xsl:attribute></meta>
-</xsl:template>
-
-<xsl:template match="subjectterm[1]" mode="entete"><xsl:value-of select="normalize-space(text())"/></xsl:template>
+<xsl:template match="subjectterm[position()=1]" mode="entete"><xsl:value-of select="normalize-space(text())"/></xsl:template>
 
 <xsl:template match="subjectterm[position()!=1]" mode="entete">, <xsl:value-of select="normalize-space(text())"/></xsl:template>
 
-<xsl:template match="subject[@role='profil']">
-  <li>
-    <strong>Profil&#160;:</strong><xsl:text> </xsl:text><xsl:apply-templates select="subjectterm"/>
-  </li>
+<xsl:template match="subject[@role][count(subjectterm[normalize-space(text()) != normalize-space(/article/@id)]) != 0]">
+	<xsl:variable name="critere" select="$doc.criteres/criteres/critere[@name = current()/@role][@libelle]/@libelle"/>
+	<xsl:if test="$critere">
+		<li>
+			<strong><xsl:value-of select="$critere"/>&#160;:</strong><xsl:text> </xsl:text><xsl:apply-templates select="subjectterm"/>
+		</li>
+	</xsl:if>
 </xsl:template>
 
-<xsl:template match="subject[@role='technologie']">
-  <li>
-    <strong>Technologie&#160;:</strong><xsl:text> </xsl:text><xsl:apply-templates select="subjectterm"/>
-  </li>
-</xsl:template>
-
-<xsl:template match="subject[@role='theme']">
-  <li>
-    <strong>Thème&#160;:</strong><xsl:text> </xsl:text><xsl:apply-templates select="subjectterm"/>
-  </li>
-</xsl:template>
+<xsl:template match="subject"/>
 
 <xsl:template match="subjectterm[1]">
-  <xsl:call-template name="jolisubjectterm">
-    <xsl:with-param name="term"><xsl:value-of select="normalize-space(text())"/></xsl:with-param>
-  </xsl:call-template>
+	<xsl:call-template name="jolisubjectterm"/>
 </xsl:template>
 
-<xsl:template match="subjectterm[position()!=1]">,
-  <xsl:call-template name="jolisubjectterm">
-    <xsl:with-param name="term"><xsl:value-of select="normalize-space(text())"/></xsl:with-param>
-  </xsl:call-template>
+<xsl:template match="subjectterm[position()!=1]">
+	<xsl:text>, </xsl:text>
+	<xsl:call-template name="jolisubjectterm"/>
 </xsl:template>
 
 <xsl:template name="jolisubjectterm">
-  <xsl:param name="term"/>
-  <a href="/{translate($term, ' ', '_')}/">
-  <xsl:choose>
-    <xsl:when test="$term='debutant'">Débutant</xsl:when>
-    <xsl:when test="$term='expert'">Expert</xsl:when>
-    <xsl:when test="$term='gourou'">Gourou</xsl:when>
-    <xsl:when test="$term='decideur'">Décideur</xsl:when>
-
-    <xsl:when test="$term='navigateurs'">Navigateurs</xsl:when>
-    <xsl:when test="$term='etudes de cas'">Étude de cas</xsl:when>
-    <xsl:when test="$term='etude cas'">Étude de cas</xsl:when>
-    <xsl:when test="$term='structure'">Structure</xsl:when>
-    <xsl:when test="$term='pages dynamiques'">Pages dynamiques</xsl:when>
-    <xsl:when test="$term='mise en page'">Mise en page</xsl:when>
-    <xsl:when test="$term='accessibilite'">Accessibilité</xsl:when>
-
-    <xsl:when test="$term='xhtml'"><acronym>XHTML</acronym></xsl:when>
-    <xsl:when test="$term='css'"><acronym>CSS</acronym></xsl:when>
-    <xsl:when test="$term='dom'"><acronym>DOM</acronym></xsl:when>
-  </xsl:choose>
-  </a>
+  <xsl:if test="normalize-space(text()) != normalize-space(/article/@id)">
+    <xsl:variable name="classement" select="$doc.criteres/criteres/critere/classements/entry[normalize-space(name/text()) = normalize-space(current()/text())]"/>
+    <a>
+      <xsl:if test="string($classement/location) != ''">
+        <xsl:attribute name="href">
+          <xsl:value-of select="$classement/location"/>
+        </xsl:attribute>
+      </xsl:if>
+      <xsl:value-of select="$classement/libelle"/>
+    </a>
+  </xsl:if>
 </xsl:template>
 
 </xsl:stylesheet>

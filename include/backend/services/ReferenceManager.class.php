@@ -140,9 +140,10 @@ class ReferenceManager extends Manager
   /**
    * Renvoie la liste des classements possibles pour un critère
    * @param string $criterion le critère
+   * @param boolean $only_online précise s'il faut exclure les intros hors-ligne
    * @return array la liste
    */
-  function getEntriesList($criterion)
+  function getEntriesList($criterion, $only_online = false)
   {
     $sql = 'SELECT doc_repertoire, doc_titre_mini FROM doc_document d,
         typ_typedocument t, document_criteres l, cri_criteres c
@@ -151,6 +152,9 @@ class ReferenceManager extends Manager
 	AND l.doc_id = d.doc_id
         AND l.cri_id = c.cri_id
         AND c.cri_name = '.$this->db->quote($criterion);
+    if($only_online)
+      $sql .= ' AND d.doc_etat > 0';
+
     $res = $this->_getList($sql);
 
     $liste = array();
@@ -299,35 +303,34 @@ class ReferenceManager extends Manager
 
   /**
    * Copie les classements en base vers une représentation XML
-   * @todo sécuriser l'écriture du fichier
-   * @todo dumper également le chemin du fichier
+   * @todo sécuriser l'écriture du fichier (collision possible entre deux écritures en parallèle)
    */
   function dumpClassements()
   {
-    require_once(PATH_INC_BACKEND_SERVICE.'Document.class.php');
-
-    $doc = new Document($this->db);
-
     $res = '<?xml version="1.0" encoding="iso-8859-1"?>'."\n<criteres>\n";
     foreach($this->getCriterionList() as $critnam => $critlib)
     {
       $res .= '  <critere name="'.$critnam.'" libelle="'.$critlib.'">'."\n  <classements>\n";
-      foreach($this->getEntriesList($critnam) as $entrnam => $entrlib)
+      foreach($this->getEntriesList($critnam, true) as $entrnam => $entrlib)
       {
-        /**
-         * @todo le premier élément de la chaîne renvoyée par getDocumentPath() contient le répertoire associé à l'état du document (offline/, temp/, www/), à virer car cela crée un lien faux dans les pages.
-         * @todo on devrait se limiter aux introductions qui sont en ligne, en effet si l'on inclut celles qui sont hors-ligne, impossible de mettre dans le backend une intro sans la publier immédiatement, sinon au moins la page d'accueil (et les documents en-ligne qui auront été regénérés entre l'upload de l'intro et sa publication) possèderont un lien faux dans les barres de navigation tant que l'intro n'est pas publiée (car le fichier dumpé est sourcé par ces pages).
-         */
-        $entrloc = $doc->load($entrnam) ? $doc->getDocumentPath() : '';
+        $sql = 'SELECT CONCAT("/", typ_repertoire, "/", doc_repertoire)
+                AS repertoire
+                FROM doc_document NATURAL JOIN typ_typedocument
+                WHERE doc_repertoire = '.$this->db->quote($entrnam);
+        $entrloc = $this->_getRow($sql);
+        $entrloc = preg_replace('/\/+/', '/', '/'.$entrloc["repertoire"].'/');
         $res .= '    <entry><name>'.$entrnam.'</name><libelle>'.$entrlib.'</libelle><location>'.$entrloc.'</location></entry>'."\n";
       }
       $res .= "  </classements>\n</critere>\n";
     }
     $res .= "</criteres>\n";
+
     ignore_user_abort(true);
-    $fp = fopen(PATH_INCLUDE."xslt/inc/criteres.xml", "w");
-    fwrite($fp, $res);
-    fclose($fp);
+    if(($fp = fopen(PATH_INCLUDE."xslt/inc/criteres.xml", "w")) !== false)
+    {
+      fwrite($fp, $res);
+      fclose($fp);
+    }
     ignore_user_abort(false);
   }
 }

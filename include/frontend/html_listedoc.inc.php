@@ -1,80 +1,55 @@
 <?php
-//
-//  OpenWebGroup CMS
-//  Version 1.0 - 03/2003
-//  Released under the GNU General Public License
-//
 /**
- * affiche une liste de documents
- * Utilisé par exemple pour les intros
- * @param   string  $titre  titre de la liste
- * @param   array   $criteres   liste de critere de selection des documents (voir FrontService)
- * @param   boolean $show_extra_infos   indique si il faut afficher des infos detailles sur chaque article
- * @param   boolean $show_categories    indique si il faut afficher toutes les categories de l'article
- * @param   boolean $usedivtexte      influence la présentation de la liste. A utiliser en fonction du type de page.
- * @return  array   la liste
- * @see FrontService::getListPage
+ * Crée une liste de documents en XHTML
+ * @package Frontend
+ * @subpackage Présentation
+ * @author Laurent Jouanneau
+ * @author Florian Hatat
+ * @copyright Copyright © 2003 OpenWeb.eu.org
+ * @license http://www.gnu.org/licenses/gpl.html GNU General Public License
  */
-function OW_liste_document ($titre, $criteres, $repertoire,
-			    $show_extra_infos = true,
-			    $show_categories = true, $usedivtexte = true)
+
+require_once('init.inc.php');
+
+function OW_liste_document ($criteres, $max = 90, $show_extra_infos = true,
+			    $show_categories = true)
 {
+  global $db;
   require_once (PATH_INC_FRONTEND.'FrontService.class.php');
 
   $infosPages = '';
-  $fs = new FrontService ($GLOBALS['db']);
-  $fs->nbLigneParPage = 90;
+  $fs = new FrontService ($db);
+
+  $fs->nbLigneParPage = $max;
+
   $OW_liste_article =
     $fs->getListPage ($criteres, $infosPages, $show_categories);
 
-  if ($usedivtexte)
-    echo '<!-- Début Texte -->
-      <div id="texte">';
-
   if (count ($OW_liste_article) > 0)
   {
-    echo "<h2>$titre</h2>\n";
-    echo "<dl class=\"listeintro\">\n";
+    echo "<dl class=\"listedocs\">\n";
     foreach ($OW_liste_article as $art)
     {
-      $pro = '';
-      foreach ($art['classement'] as $profil)
-        $pro .= ', '.$profil;
-      $pro = substr ($pro, 1);
-      echo "  <dt><cite>".$art['titre']."</cite></dt>\n";
+      echo '  <dt><cite><a href="'.$art['repertoire'].'">'.$art['titre'].'</a></cite>';
       if ($show_extra_infos)
       {
-        echo '  <p>par ', $art['auteurs'], ', le ', $art['date'], '</p>';
-        if ($show_categories)
+        echo ' par '.$art['auteurs'].', le '.$art['date'];
+
+        if ($show_categories && !empty($art['classement']))
         {
-	  echo '  <ul>';
-          foreach ($art['profil'] as $profil)
-          {
-            echo '    <li><a href="/', $profil['repertoire'],
-              '/" title="Profil">', $profil['libelle'], '</a></li>';
-          }
-          foreach ($art['theme'] as $profil)
-          {
-            echo '    <li><a href="/', $profil['repertoire'],
-              '/" title="Thème">', $profil['libelle'], '</a></li>';
-          }
-          foreach ($art['techno'] as $profil)
-          {
-            echo '    <li><a href="/', $profil['repertoire'],
-              '/" title="Technologie">', $profil['libelle'], '</a></li>';
-          }
-	  echo '  </ul>';
+          echo ' pour ';
+          $classmt = '';
+	  foreach($art['classement'] as $cri)
+            foreach($cri as $rep => $cls)
+              $classmt .= ', <a href="'.$fs->getDocumentPath($rep).'">'.$cls.'</a>';
+          echo substr($classmt, 1);
         }
       }
-      echo "<p>", $art['accroche'], ' <a href="', $repertoire,
-        $art['repertoire'], "/\">Lire <cite>".$art['titre']."</cite></a>.</p></dd>\n";
+      echo "</dt>\n";
+      echo '  <dd>'.$art['accroche']."</dd>\n"; 
     }
-    echo "</div>";
+    echo "</dl>";
   }
-
-  if ($usedivtexte)
-    echo ' </div>
-      <!-- fin Texte -->';
 }
 
 ?>

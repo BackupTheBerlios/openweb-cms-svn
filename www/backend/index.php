@@ -54,5 +54,9 @@ foreach($listeArticles as $art)
 <h2>Quelques liens</h2>
 <ul>
 <li><a href="http://stats.apinc.org/openweb.eu.org/">Les stats du site</a></li>
-<li><a href="template/template_xhtml.html">Template XHTML</a> pour la rédaction de documents. (clic droit, save link target as..)</li>
+<li>Les gabarits pour la rédaction de documents :
+  <ul>
+    <li><a href="template/xhtml.html">XHTML</a></li>
+    <li><a href="template/docbook.xml">XML/Docbook</a></li>
+  </ul>
 </ul>

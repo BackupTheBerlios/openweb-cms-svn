@@ -22,7 +22,7 @@ require_once "DB.php";
 
 // Paramètres pour la base de données
 require_once(PATH_INCLUDE.'database.inc.php');
-$DSN = "mysql://$DB_LOGIN:$DB_PASSWORD@$DB_SERVER/$DB_DATABASE";
+$DSN = "mysql://$dbuser:$dbpass@$dbhost/$dbbase";
 
 // Connexion à la base de données
 $db = DB::Connect($DSN);

@@ -6,7 +6,9 @@ xmlns:tpl="http://openweb.eu.org/tpl">
   <tpl:head>
     <title>Openweb.eu.org - <tpl:title /></title>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
-    <meta name="revisit-after" content="30 days" />
+    <meta http-equiv="Content-Script-Type" content="text/javascript" />
+    <meta http-equiv="Content-Style-Type" content="text/css" />
+    <meta name="revisit-after" content="15 days" />
     <meta name="robots" content="index,follow" />
 
     <tpl:style-switcher-links/>
@@ -14,9 +16,9 @@ xmlns:tpl="http://openweb.eu.org/tpl">
     <link rel="author" title="Auteurs" href="/openwebgroup/membres/" />
     <link rel="copyright" title="Conditions de réutilisation" href="/openwebgroup/licence/" />
     <!-- TODO mettre ces liens en relation avec les formats que le code
-         PHP pretend generer dans OutputFactory.lib.php -->
-    <link rel="alternate" title="Version Docbook/XML" type="text/xml" href="docbook_fr.xml" />
-    <link rel="alternate" title="Version brute" type="text/html" href="xhtml_fr.html" />
+         PHP prétend générer dans OutputFactory.lib.php -->
+    <link rel="alternate" title="Version Docbook/XML" type="text/xml" href="docbook.xml" />
+    <link rel="alternate" title="Version brute" type="text/html" href="xhtml.xml" />
     <link rel="start" title="Accueil" href="/" />
     <link rel="help" title="Politique d'accessibilité" href="/openwebgroup/demarche_accessibilite/" />
     <link rel="index" title="Carte" href="/openwebgroup/plan/" />
@@ -41,10 +43,10 @@ xmlns:tpl="http://openweb.eu.org/tpl">
         <form id="recherche" method="get"
         action="http://search.atomz.com/search/">
           <div id="moteurint">
-            <label for="sp-q">Rechercher sur ce site</label>
+            <label for="sp-q">Rechercher sur ce site :</label>
             <input name="sp-q" id="sp-q" accesskey="4"
-            value="Tapez vos mots-clés" tabindex="4" class="champs"
-            onfocus="this.select()" />
+            value="Accès clavier touche 4" tabindex="4" class="champs"
+            onfocus="this.value=''" />
             <input type="submit" name="Submit" value="Ok" class="valid" />
             <input type="hidden" name="sp-a" value="sp1002850f" />
             <input type="hidden" name="sp-p" value="all" />
@@ -110,7 +112,7 @@ xmlns:tpl="http://openweb.eu.org/tpl">
           title="Association pour l'Internet Non Commercial"
           xml:lang="fr">APINC</acronym></a>
         <img src="/img/apinc.png" width="16" height="15" alt="" title="" />
-        et actualités dopées par <a href="http://www.cafelog.com/">B2</a>.</p>
+        et actualités dopées par <a href="http://dotclear.net/">Dotclear</a>.</p>
       </div>
       <!-- Fin Ours -->
     </div>

@@ -29,4 +29,60 @@ Template de création de commentaire depuis le gabarit
   <xsl:comment><xsl:value-of select="."/></xsl:comment>
 </xsl:template>
 
+<!--
+===========================================================
+En tête du document
+===========================================================
+-->
+<xsl:template match="tpl:head" mode="template">
+  <head>
+    <xsl:apply-templates mode="template"/>
+    <xsl:apply-templates select="$doc.content/article/articleinfo" mode="entete"/>
+  </head>
+</xsl:template>
+
+<!--
+===========================================================
+Titre du document
+===========================================================
+-->
+<xsl:template match="tpl:title" mode="template">
+  <xsl:value-of select="$doc.content/article/articleinfo/title"/>
+</xsl:template>
+
+<!--
+===========================================================
+Contenu du document
+===========================================================
+-->
+<xsl:template match="tpl:content" mode="template">
+  <h1><xsl:value-of select="$doc.content/article/articleinfo/title"/></h1>
+  <!-- Contenu -->
+  <xsl:apply-templates select="$doc.content/article"/>
+</xsl:template>
+
+<xsl:template match="tpl:classements" mode="template"/>
+
+<xsl:template match="tpl:critere" mode="template">
+  <xsl:variable name="crit" select="@name"/>
+  <xsl:apply-templates select="$doc.criteres/criteres/critere[@name=$crit] " mode="classements"/>
+</xsl:template>
+
+<xsl:template match="classements" mode="classements">
+  <ul>
+    <xsl:apply-templates mode="classements"/>
+  </ul>
+</xsl:template>
+
+<xsl:template match="entry" mode="classements">
+  <li><a><xsl:attribute name="href"><xsl:value-of select="location"/></xsl:attribute><xsl:value-of select="libelle"/></a></li>
+</xsl:template>
+
+<xsl:template match="critere" mode="classements">
+  <div id="{@name}">
+    <h2><xsl:value-of select="@libelle"/></h2>
+    <xsl:apply-templates mode="classements"/>
+  </div>
+</xsl:template>
+
 </xsl:stylesheet>

@@ -92,7 +92,7 @@ function _output_docbook_to_xhtml($src)
 {
   global $outputInfos;
   return _output_xsl_generic_transform($src,
-    $outputInfos['docbook']['xhtml']['file'], "xhtml/index.xsl", array('path_site_root' => PATH_SITE_ROOT));
+    $outputInfos['docbook']['xhtml']['file'], "xhtml/docbook.xsl", array('path_site_root' => PATH_SITE_ROOT));
 }
 
 /**

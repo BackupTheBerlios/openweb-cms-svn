@@ -5,18 +5,6 @@ xmlns:tpl="http://openweb.eu.org/tpl"
 xmlns="http://www.w3.org/1999/xhtml"
 exclude-result-prefixes="tpl">
 
-<!--
-Par : Fabrice BONNY
-Le : 06/03/2003
-
-Modifié
-Par : Olivier Meunier
-Le: 30/03/2003
-Pour :
-- ajout de <xsl:text> à divers endroits
-- indentation
--->
-
 <xsl:template match="bibliography">
   <hr/>
   <h2>Bibliographie</h2>

@@ -17,7 +17,7 @@ Variable gabarit et contenu
 ===========================================================
 -->
 <xsl:variable name="doc.content" select="/"/>
-<xsl:variable name="doc.template" select="document('../xslt/gabarits/document.xml')"/>
+<xsl:variable name="doc.template" select="document('../xslt/gabarits/xhtml.xml')"/>
 <xsl:variable name="doc.criteres" select="document('../xslt/inc/criteres.xml')"/>
 
 <!--

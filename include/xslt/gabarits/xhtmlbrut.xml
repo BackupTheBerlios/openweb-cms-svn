@@ -6,6 +6,7 @@ xmlns:tpl="http://openweb.eu.org/tpl">
   <tpl:head>
     <title>Openweb.eu.org - <tpl:title /></title>
     <meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+    <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" />
   </tpl:head>
   <body>
     <tpl:content />

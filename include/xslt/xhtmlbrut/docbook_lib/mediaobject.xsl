@@ -12,29 +12,29 @@ Objets multimédia externes
 -->
 
 <xsl:template match="inlinemediaobject">
-  <xsl:apply-templates select="imageobject"/>
+	<xsl:apply-templates select="imageobject"/>
 </xsl:template>
 
 <xsl:template match="mediaobject">
-  <div>
-    <xsl:apply-templates select="imageobject"/>
-  </div>
+	<div>
+		<xsl:apply-templates select="imageobject"/>
+	</div>
 </xsl:template>
 
 <xsl:template match="videoobject">
-  <object>
-  </object>
+	<object>
+	</object>
 </xsl:template>
 
 <xsl:template match="audioobject">
-  <object>
-  </object>
+	<object>
+	</object>
 </xsl:template>
 
 <xsl:template match="imageobject">
-  <img src="{imagedata/@fileref}">
-    <xsl:attribute name="alt"><xsl:apply-templates select="following-sibling::textobject//text()"/></xsl:attribute>
-  </img>
+	<img src="{imagedata/@fileref}">
+		<xsl:attribute name="alt"><xsl:apply-templates select="following-sibling::textobject//text()"/></xsl:attribute>
+	</img>
 </xsl:template>
 
 </xsl:stylesheet>

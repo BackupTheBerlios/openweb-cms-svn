@@ -101,7 +101,7 @@ class DocumentManager extends Manager
    */
   function getListBy1Critere($classmt)
   {
-    $sql = 'SELECT a.doc_id as id, a.doc_titre_mini as titre, c.ordre as ordre
+    $sql = 'SELECT a.doc_id as id, a.doc_titre as titre, c.ordre as ordre
             FROM doc_document a, doc_document b, document_criteres c
             WHERE a.doc_id = c.doc_id AND b.doc_id = c.intro_id
             AND c.doc_id <> c.intro_id

@@ -62,13 +62,17 @@ Contenu du document
     <xsl:apply-templates select="$doc.content/article"/>
     <hr/>
     <xsl:comment>OW_LISTE_ART</xsl:comment>
-    <xsl:variable name="email">
+    <p class="reaction">Une question, une remarque&#160;? Écrivez à l'auteur à 
       <xsl:choose>
-        <xsl:when test="$doc.content/article/articleinfo/author[1]/email"><xsl:apply-templates select="$doc.content/article/articleinfo/author[1]/email/text()"/></xsl:when>
-      <xsl:otherwise>editorial@openweb.eu.org</xsl:otherwise>
-    </xsl:choose>
-  </xsl:variable>
-  <p class="reaction">Une question, une remarque&#160;? Écrivez à l'auteur à <a href="mailto:{$email}"><xsl:value-of select="$email"/></a>.</p>
+        <xsl:when test="$doc.content/article/articleinfo/author[1]/email"><xsl:apply-templates select="$doc.content/article/articleinfo/author[1]/email"/></xsl:when>
+        <xsl:otherwise>
+	  <a>
+	    <xsl:attribute name="href">mailto:<xsl:call-template name="email.antispam"><xsl:with-param name="email">editorial@openweb.eu.org</xsl:with-param></xsl:call-template></xsl:attribute>
+            editorial@openweb.eu.org
+	  </a>
+	</xsl:otherwise>
+      </xsl:choose>
+    </p>
   </div>
 </xsl:template>
 

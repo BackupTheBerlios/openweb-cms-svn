@@ -197,18 +197,17 @@ class Document
       $etat = $this->etat;
 
     $dir = $this->ref->getStatusInfos($etat);
-    return $dir['dir'].$this->type->repertoire.$this->infos->repertoire;
+    return $dir['dir'].'/'.$this->type->repertoire.'/'.$this->infos->repertoire;
   }
 
   /**
    * retourne l'url du document, s'il est en ligne
    * @return string URL du document
-   * @todo supprimer la référence à la constante OW_URL
    */
   function getDocumentUrl()
   {
     if($this->etat > 0)
-      return OW_URL.$this->type->repertoire.$this->infos->repertoire.'/';
+      return OW_URL.$this->type->repertoire.'/'.$this->infos->repertoire.'/';
     else
       return '';
   }

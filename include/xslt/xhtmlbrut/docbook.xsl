@@ -20,11 +20,12 @@ Inclusions
 
 <!--
 ===========================================================
-Variable gabarit et contenu
+Variables gabarit, contenu et critères
 ===========================================================
 -->
 <xsl:variable name="doc.template" select="document('../gabarits/xhtmlbrut.xml')"/>
 <xsl:variable name="doc.content" select="/"/>
+<xsl:variable name="doc.criteres" select="document('../inc/criteres.xml')"/>
 
 <!--
 ===========================================================
@@ -33,38 +34,6 @@ Racine du document
 -->
 <xsl:template match="/">
   <xsl:apply-templates select="$doc.template/*" mode="template"/>
-</xsl:template>
-
-<!--
-===========================================================
-En tête du document
-===========================================================
--->
-<xsl:template match="tpl:head" mode="template">
-  <head>
-    <xsl:apply-templates mode="template"/>
-    <xsl:apply-templates select="$doc.content/article/articleinfo" mode="entete"/>
-  </head>
-</xsl:template>
-
-<!--
-===========================================================
-Titre du document
-===========================================================
--->
-<xsl:template match="tpl:title" mode="template">
-  <xsl:value-of select="$doc.content/article/articleinfo/title"/>
-</xsl:template>
-
-<!--
-===========================================================
-Contenu du document
-===========================================================
--->
-<xsl:template match="tpl:content" mode="template">
-  <h1><xsl:value-of select="$doc.content/article/articleinfo/title"/></h1>
-  <!-- Contenu -->
-  <xsl:apply-templates select="$doc.content/article"/>
 </xsl:template>
 
 </xsl:stylesheet>

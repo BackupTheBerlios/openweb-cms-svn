@@ -12,14 +12,23 @@
 define('OW_BACKEND_ACTION', 'ACT_DOCREGEN');
 require_once("../../include/backend/init.inc.php");
 require_once(PATH_INC_BACKEND_SERVICE.'DocumentManager.class.php');
+require_once(PATH_INC_BACKEND_SERVICE.'ReferenceManager.class.php');
 
 // instanciation des services
 $am = new DocumentManager($db);
+
 $nbrtotal = $am->nbrDocs();
 
 if(isset($_GET['act']) && $_GET['act'] == 'do')
 {
   $page = isset($_GET['pg']) ? $_GET['pg'] : 0;
+
+  if($page == 0)
+  {
+    $ref = new ReferenceManager($db);
+    $ref->dumpClassements();
+  }
+
   $nextpage = $am->toutRegenerer($page);
   if($nextpage > 0)
   {
