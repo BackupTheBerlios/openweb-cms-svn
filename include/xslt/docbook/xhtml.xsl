@@ -3,7 +3,7 @@
   xmlns:html="http://www.w3.org/1999/xhtml" version="1.0"
   exclude-result-prefixes="html">
 
-<xsl:include href="dublincore.xsl"/>
+<xsl:variable name="doc.content" select="/"/>
 
 <!--
 Transformation d'un document XHTML Strict en Docbook XML
@@ -55,8 +55,16 @@ Templates mangeurs d'attributs
 <xsl:template match="html:html">
 	<article>
 		<xsl:call-template name="default.attrs"/>
-		<xsl:apply-templates select="/html:body/html:h1"/>
+		<xsl:apply-templates select="html:body/@class"/>
+		<xsl:apply-templates select="html:body/html:h1"/>
 		<xsl:apply-templates/>
+		<xsl:if test="//html:acronym[@title]">
+			<glossary>
+				<glossdiv role="acronyms">
+					<xsl:apply-templates select="//html:acronym[@title]" mode="glossaire"/>
+				</glossdiv>
+			</glossary>
+		</xsl:if>
 	</article>
 </xsl:template>
 
@@ -74,6 +82,10 @@ Templates mangeurs d'attributs
 <xsl:template match="html:body">
 	<xsl:apply-templates select="*[generate-id(following-sibling::html:h2[1]) = generate-id(current()/html:h2[1])]"/>
 	<xsl:apply-templates select="html:h2"/>
+</xsl:template>
+
+<xsl:template match="html:body/@class">
+	<xsl:attribute name="role"><xsl:value-of select="."/></xsl:attribute>
 </xsl:template>
 
 <xsl:template match="html:h1">
@@ -194,15 +206,38 @@ Templates mangeurs d'attributs
 <xsl:template match="html:acronym">
 	<acronym>
 		<xsl:call-template name="default.attrs"/>
-		<xsl:apply-templates select="@title"/>
 		<xsl:apply-templates/>
 	</acronym>
 </xsl:template>
 
-<!-- TODO: générer plutôt un glossaire en fin d'article -->
-<xsl:template match="html:acronym/@title">
-	<xsl:attribute name="role"><xsl:value-of select="."/></xsl:attribute>
+<xsl:template match="html:abbr">
+	<abbrev>
+		<xsl:call-template name="default.attrs"/>
+		<xsl:apply-templates/>
+	</abbrev>
 </xsl:template>
+
+<xsl:template match="html:acronym[@title][not(preceding::html:acronym[text()=current()/text()])]" mode="glossaire">
+	<glossentry>
+		<xsl:call-template name="default.attrs"/>
+		<glossterm><xsl:value-of select="@title"/></glossterm>
+		<acronym><xsl:value-of select="@title"/></acronym>
+		<glossdef><xsl:apply-templates/></glossdef>
+	</glossentry>
+</xsl:template>
+<xsl:template match="html:acronym" mode="glossaire"/>
+
+<xsl:template match="html:abbr[@title][not(preceding::html:abbr[text()=current()/text()])]" mode="glossaire">
+	<glossentry>
+		<xsl:call-template name="default.attrs"/>
+		<glossterm><xsl:value-of select="@title"/></glossterm>
+		<abbrev><xsl:value-of select="@title"/></abbrev>
+		<glossdef><xsl:apply-templates/></glossdef>
+	</glossentry>
+</xsl:template>
+
+<xsl:template match="html:acronym" mode="glossaire"/>
+<xsl:template match="html:abbr" mode="glossaire"/>
 
 <xsl:template match="html:cite">
 	<citation>
@@ -223,14 +258,6 @@ Templates mangeurs d'attributs
 		<xsl:call-template name="default.attrs"/>
 		<xsl:apply-templates/>
 	</userinput>
-</xsl:template>
-
-<!-- TODO: faire comme pour acronym ? -->
-<xsl:template match="html:abbr">
-	<abbrev>
-		<xsl:call-template name="default.attrs"/>
-		<xsl:apply-templates/>
-	</abbrev>
 </xsl:template>
 
 <xsl:template match="html:tt">
@@ -436,18 +463,18 @@ Templates mangeurs d'attributs
     <xsl:apply-templates select="@summary"/>
     <tgroup>
 <!-- La suite calcule le nombre de colonnes dans le tableau, comme précisé
-     sur http://www.w3.org/TR/html4/struct/tables.html#h-11.2.4.3 -->
+     sur http://www.w3.org/TR/html4/struct/tables.html#h-11.2.4.3
+     Ça peut sembler un peu compliqué mais l'ensemble doit pouvoir s'en
+     titre même avec un tableau mal fait mais valide. -->
       <xsl:attribute name="cols">
         <xsl:choose>
           <xsl:when test="html:col or html:colgroup">
             <xsl:value-of select="sum(html:col[@span]/@span)+count(html:col[not(@span)])+sum(html:colgroup[not(html:col)]/@span)+sum(html:colgroup/html:col[@span]/@span)+sum(html:colgroup/html:col[not(@span)])"/>
           </xsl:when>
           <xsl:otherwise>
-<!-- Repris d'Alain Ketterlin sur fr.comp.text.xml
-     <wywutprdkb.fsf@polya.u-strasbg.fr>. Magistral :-) -->
             <xsl:for-each select="html:tbody/html:tr">
-<!--<xsl:sort select="count(html:td[not(@colspan) or @colspan = 0])+sum(html:td[@colspan]/@colspan)+sum(preceding-sibling::html:tr/html:td[@rowspan][@colspan][count(current()/preceding-sibling::*)-count(preceding-sibling::*)+1 &lt;= @rowspan or @rowspan = 0]/@colspan)+count(preceding-sibling::html:tr/html:td[@rowspan][not(@colspan) or @colspan = 0][count(current()/preceding-sibling::*)-count(preceding-sibling::*)+1 &lt;= @rowspan or @rowspan = 0])" data-type="number" order="descending"/>--><xsl:value-of select="count(html:td[not(@colspan) or @colspan = 0])+sum(html:td[@colspan]/@colspan)+sum(preceding-sibling::html:tr/html:td[@rowspan][@colspan][count(current()/preceding-sibling::*)-count(preceding-sibling::*)+1 &lt;= @rowspan or @rowspan = 0]/@colspan)+count(preceding-sibling::html:tr/html:td[@rowspan][not(@colspan) or @colspan = 0][count(current()/preceding-sibling::*)-count(preceding-sibling::*)+1 &lt;= @rowspan or @rowspan = 0])"/>-<!--
-              <xsl:sort select="count(html:td[not(@colspan) or @colspan = 0])+sum(html:td[@colspan]/@colspan)+sum(preceding-sibling::html:tr/html:td[@rowspan][@colspan][count(current()/preceding-sibling::*)-count(preceding-sibling::*)+1 &lt;= @rowspan or @rowspan = 0]/@colspan)+count(preceding-sibling::html:tr/html:td[@rowspan][not(@colspan) or @colspan = 0][count(current()/preceding-sibling::*)-count(preceding-sibling::*)+1 &lt;= @rowspan or @rowspan = 0])" data-type="number" order="descending"/><xsl:value-of select="count(html:td)"/>/<xsl:value-of select="count(html:td[not(@colspan) or @colspan = 0])+sum(html:td[@colspan]/@colspan)+sum(preceding-sibling::html:tr/html:td[@rowspan][@colspan][count(current()/preceding-sibling::*)-count(preceding-sibling::*)+1 &lt;= @rowspan or @rowspan = 0]/@colspan)+count(preceding-sibling::html:tr/html:td[@rowspan][not(@colspan) or @colspan = 0][count(current()/preceding-sibling::*)-count(preceding-sibling::*)+1 &lt;= @rowspan or @rowspan = 0])"/>-<xsl:if test="position()=1">(<xsl:value-of select="count(html:td[not(@colspan) or @colspan = 0])+sum(html:td[@colspan]/@colspan)+sum(preceding-sibling::html:tr/html:td[@rowspan][@colspan][count(current()/preceding-sibling::*)-count(preceding-sibling::*)+1 &lt;= @rowspan or @rowspan = 0]/@colspan)+count(preceding-sibling::html:tr/html:td[@rowspan][not(@colspan) or @colspan = 0][count(current()/preceding-sibling::*)-count(preceding-sibling::*)+1 &lt;= @rowspan or @rowspan = 0])"/>)</xsl:if>-->
+              <xsl:sort select="count(html:td[not(@colspan) or @colspan = 0])+sum(html:td[@colspan]/@colspan)+sum(preceding-sibling::html:tr/html:td[@rowspan][@colspan][count(current()/preceding-sibling::*)-count(../preceding-sibling::*)+1 &lt;= @rowspan or @rowspan = 0]/@colspan)+count(preceding-sibling::html:tr/html:td[@rowspan][not(@colspan) or @colspan = 0][count(current()/preceding-sibling::*)-count(../preceding-sibling::*)+1 &lt;= @rowspan or @rowspan = 0])" data-type="number" order="descending"/>
+	      <xsl:if test="position()=1"><xsl:value-of select="count(html:td[not(@colspan) or @colspan = 0])+sum(html:td[@colspan]/@colspan)+sum(preceding-sibling::html:tr/html:td[@rowspan][@colspan][count(current()/preceding-sibling::*)-count(../preceding-sibling::*)+1 &lt;= @rowspan or @rowspan = 0]/@colspan)+count(preceding-sibling::html:tr/html:td[@rowspan][not(@colspan) or @colspan = 0][count(current()/preceding-sibling::*)-count(../preceding-sibling::*)+1 &lt;= @rowspan or @rowspan = 0])"/></xsl:if>
             </xsl:for-each>
           </xsl:otherwise>
         </xsl:choose>

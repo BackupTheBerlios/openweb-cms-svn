@@ -8,13 +8,22 @@ xmlns:tpl="http://openweb.eu.org/tpl">
     <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
     <meta name="revisit-after" content="30 days" />
     <meta name="robots" content="index,follow" />
+
     <tpl:style-switcher-links/>
+
     <link rel="author" title="Auteurs" href="/openwebgroup/membres/" />
     <link rel="copyright" title="Conditions de réutilisation" href="/openwebgroup/licence/" />
+    <!-- TODO mettre ces liens en relation avec les formats que le code
+         PHP pretend generer dans OutputFactory.lib.php -->
+    <link rel="alternate" title="Version Docbook/XML" type="text/xml" href="docbook_fr.xml" />
+    <link rel="alternate" title="Version brute" type="text/html" href="xhtml_fr.html" />
+    <link rel="start" title="Accueil" href="/" />
+    <link rel="help" title="Politique d'accessibilité" href="/openwebgroup/demarche_accessibilite/" />
+    <link rel="index" title="Carte" href="/openwebgroup/plan/" />
+    <link rel="shortcut icon" type="images/x-icon" href="/favicon.ico" />
 
+    <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" />
     <meta name="DC.Publisher" content="OpenWebGroup.eu.org" />
-    <meta name="DC.Rights"
-      content="OpenPublication, http://opencontent.org/openpub/" />
   </tpl:head>
   <body>
     <!-- Début Page -->

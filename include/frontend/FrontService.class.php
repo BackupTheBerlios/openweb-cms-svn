@@ -8,6 +8,8 @@
  * @copyright Copyright © 2003 OpenWeb.eu.org
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License
  * @uses Manager
+ * @todo implémenter toutes les fonctions qui peuvent être utiles dans les
+ * pages publiques, principalement les listes d'articles.
  */
 
 require_once (PATH_INC_BASECLASS.'Manager.class.php');
@@ -93,28 +95,38 @@ class FrontService extends Manager
    * Récupère le classement d'un document
    * @param integer $docid id du document cherché
    * @return array les classements
+   * @todo traiter le cas où titre_mini est NULL (remplacer par doc_titre)
    */
   function getClassements($doc_id)
   {
     $classements = array();
-    $res = $this->_getList('SELECT * FROM cri_criteres');
+    $sql = "SELECT cri_name, doc_repertoire, doc_titre_mini
+            FROM document_criteres c
+            NATURAL JOIN cri_criteres, doc_document d
+            WHERE intro_id = d.doc_id AND c.doc_id <> d.doc_id
+            AND c.doc_id = ".intval($doc_id);
+    $res = $this->_getList($sql);
+
     foreach($res as $val)
-    {
-      $sql = 'SELECT d2.doc_repertoire as name, d2.doc_titre_mini as libelle
-              FROM doc_document d1, doc_document d2, document_criteres c
-              WHERE d1.doc_id = '.intval($doc_id).'
-              AND cri_id = '.intval($val['cri_id']).'
-              AND d1.doc_id = c.doc_id
-              AND d2.doc_id = c.intro_id';
-      $tmp = $this->_getList($sql);
-      if(count($tmp) != 0)
-      {
-        $classements[$val['cri_name']]['libelle'] = $val['cri_libelle'];
-        foreach($tmp as $cl)
-          $classements[$val['cri_name']]['entries'][$cl['name']] = $cl['libelle'];
-      }
-    }
+      $classements[$val['cri_name']][$val['doc_repertoire']] = $val['doc_titre_mini'];
+
     return $classements;
+  }
+
+  /**
+   * Récupère le chemin de stockage d'un document
+   * @param integer $doc_id id du document concerné
+   * @return string chemin, relatif à la racine du site
+   * @todo virer les / dans typ_repertoire dans la base et l'ajouter ici
+   * @see Document::getDocumentPath
+   */
+  function getDocumentPath($doc_id)
+  {
+    $sql = "SELECT CONCAT(typ_repertoire, doc_repertoire) as rep
+            FROM doc_document NATURAL JOIN typ_typedocument
+            WHERE doc_id = ".intval($doc_id);
+    $res = $this->_getRow($sql);
+    return $res['rep'];
   }
 }
 

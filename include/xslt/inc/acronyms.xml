@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
+<!-- TODO utiliser la structure glossary de Docbook ? -->
 <acronyms>
   <word acronym="(X)HTML" lang="en">(eXtensible) HyperText Markup Language</word>
   

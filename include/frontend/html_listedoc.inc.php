@@ -34,14 +34,14 @@ function OW_liste_document ($titre, $criteres, $repertoire,
   if (count ($OW_liste_article) > 0)
   {
     echo "<h2>$titre</h2>\n";
-    echo "<div class=\"listeintro\">\n";
+    echo "<dl class=\"listeintro\">\n";
     foreach ($OW_liste_article as $art)
     {
       $pro = '';
-      foreach ($art['profil'] as $profil)
+      foreach ($art['classement'] as $profil)
         $pro .= ', '.$profil;
       $pro = substr ($pro, 1);
-      echo "  <h3>".$art['titre']."</h3>\n";
+      echo "  <dt><cite>".$art['titre']."</cite></dt>\n";
       if ($show_extra_infos)
       {
         echo '  <p>par ', $art['auteurs'], ', le ', $art['date'], '</p>';

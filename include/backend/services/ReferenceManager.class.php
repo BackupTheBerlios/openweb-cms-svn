@@ -314,6 +314,10 @@ class ReferenceManager extends Manager
       $res .= '  <critere name="'.$critnam.'" libelle="'.$critlib.'">'."\n  <classements>\n";
       foreach($this->getEntriesList($critnam) as $entrnam => $entrlib)
       {
+        /**
+         * @todo le premier élément de la chaîne renvoyée par getDocumentPath() contient le répertoire associé à l'état du document (offline/, temp/, www/), à virer car cela crée un lien faux dans les pages.
+         * @todo on devrait se limiter aux introductions qui sont en ligne, en effet si l'on inclut celles qui sont hors-ligne, impossible de mettre dans le backend une intro sans la publier immédiatement, sinon au moins la page d'accueil (et les documents en-ligne qui auront été regénérés entre l'upload de l'intro et sa publication) possèderont un lien faux dans les barres de navigation tant que l'intro n'est pas publiée (car le fichier dumpé est sourcé par ces pages).
+         */
         $entrloc = $doc->load($entrnam) ? $doc->getDocumentPath() : '';
         $res .= '    <entry><name>'.$entrnam.'</name><libelle>'.$entrlib.'</libelle><location>'.$entrloc.'</location></entry>'."\n";
       }

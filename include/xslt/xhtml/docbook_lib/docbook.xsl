@@ -14,11 +14,11 @@ exclude-result-prefixes="tpl">
 ===========================================================
 -->
 <xsl:template name="output.attrs">
-  <xsl:apply-templates select="attribute::*"/>
+  <xsl:apply-templates select="@*"/>
 </xsl:template>
 
 <!-- Template glouton pour attributs à jeter -->
-<xsl:template match="attribute::*" priority="-10"/>
+<xsl:template match="@*" priority="-10"/>
 
 <!-- Attributs généraux toujours recopiés -->
 <xsl:template match="@lang">
@@ -43,10 +43,6 @@ Structure générale du document
 	<xsl:apply-templates/>
 </xsl:template>
 
-<xsl:template match="abstract" mode="entete"></xsl:template>
-
-<xsl:template match="title" mode="entete"></xsl:template>
-
 <xsl:template match="article/title|section/title">
 	<xsl:variable name="niveau" select="count(ancestor-or-self::section)+2"/>
 	<xsl:variable name="element">
@@ -61,6 +57,7 @@ Structure générale du document
 	</xsl:element>
 </xsl:template>
 
+<!-- TODO texte dans la feuille XSLT, mauvais pour l'i18n -->
 <xsl:template match="abstract/para">
 	<h3>En bref</h3>
 	<p>

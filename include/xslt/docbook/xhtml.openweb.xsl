@@ -4,16 +4,7 @@
   exclude-result-prefixes="html">
 
 <xsl:include href="xhtml.xsl"/>
-
-<xsl:template match="html:head">
-  <articleinfo>
-    <xsl:apply-templates select="/html:html/html:body/html:h2"/>
-    <xsl:apply-templates select="child::node()[local-name()!='meta' or (@name!='DC.Resource Type' and @name!='DC.Subject' and @name!='DC.Audience')]"/>
-    <subjectset>
-      <xsl:apply-templates select="html:meta[@name='DC.Resource Type' or @name='DC.Subject' or @name='DC.Audience']"/>
-    </subjectset>
-  </articleinfo>
-</xsl:template>
+<xsl:include href="dublincore.xsl"/>
 
 <xsl:template match="html:dl[@class='interview']">
 	<qandaset>
@@ -39,6 +30,10 @@
 		<xsl:call-template name="default.attrs"/>
 		<xsl:apply-templates/>
 	</answer>
+</xsl:template>
+
+<xsl:template match="html:dl[@class='interview']/html:dd/text()">
+	<para><xsl:value-of select="."/></para>
 </xsl:template>
 
 <xsl:template match="html:div[@class='note']">
@@ -77,6 +72,6 @@
 </xsl:template>
 
 <!-- On ignore le tout premier <strong> -->
-<xsl:template match="html:div[@class='avertissement' or @class='astuce' or @class='attention' or @class='important' or @class='note']/strong[1]"></xsl:template>
+<xsl:template match="html:div[@class='avertissement' or @class='astuce' or @class='attention' or @class='important' or @class='note']/strong[1]"/>
 
 </xsl:stylesheet>

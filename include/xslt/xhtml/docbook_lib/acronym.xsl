@@ -19,36 +19,36 @@ Acronym qui n'est pas dans un title
   </xsl:variable>
   
   <!-- Vérification de la présence de l'acronym dans le fichier -->
-  <xsl:variable name="dico" select="document('../inc/acronyms.xml')/acronyms"/>
+  <xsl:variable name="dico" select="document('../../inc/acronyms.xml')/acronyms"/>
   <xsl:variable name="find" select="$dico/word[@acronym=$word]"/>
   
   <acronym>
-    <xsl:if test="$position = 1">
     <xsl:call-template name="output.attrs"/>
-    <!-- l'appel précédent peut avoir créé des attributs @title et @lang,
-         ils seront remplacés si nécessaire -->
-      <xsl:if test="string($find) != ''">
-        <!-- si $find a une valeur on va l'utiliser en title -->
-        <xsl:attribute name="title">
-          <xsl:value-of select="$find"/>
-        </xsl:attribute>
-        <xsl:attribute name="lang">
-          <xsl:value-of select="$dico/word[@acronym=$word]/@lang"/>
-        </xsl:attribute>
-      </xsl:if>
+    <xsl:if test="$position = 1">
+      <xsl:choose>
+        <xsl:when test="string($find) != ''">
+          <!-- si $find a une valeur on va l'utiliser en title -->
+          <xsl:attribute name="title">
+            <xsl:value-of select="$find"/>
+          </xsl:attribute>
+          <xsl:attribute name="lang">
+            <xsl:value-of select="$dico/word[@acronym=$word]/@lang"/>
+          </xsl:attribute>
+        </xsl:when>
+        <xsl:when test="//glossentry/acronym[text() = $word]">
+          <xsl:attribute name="title">
+            <xsl:value-of select="//glossentry/acronym[text() = $word]/../glossterm"/>
+          </xsl:attribute>
+          <xsl:if test="//glossentry/acronym[text() = $word]/../glossterm/@lang">
+            <xsl:attribute name="lang">
+              <xsl:value-of select="//glossentry/acronym[text() = $word]/../glossterm/@lang"/>
+            </xsl:attribute>
+          </xsl:if>
+        </xsl:when>
+      </xsl:choose>
     </xsl:if>
-
     <xsl:apply-templates/>
   </acronym>
-</xsl:template>
-
-<!--
-Attribut role d'un acronyme qui n'est pas dans le dico
--->
-<xsl:template match="acronym/@role">
-  <xsl:attribute name="title">
-    <xsl:value-of select="."/>
-  </xsl:attribute>
 </xsl:template>
 
 <!--

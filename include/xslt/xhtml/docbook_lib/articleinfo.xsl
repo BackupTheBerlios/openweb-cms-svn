@@ -18,27 +18,17 @@ Articleinfo pour HEAD du document
 ===========================================================
 -->
 <xsl:template match="articleinfo" mode="entete">
-  <!-- Début Meta -->
-  <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" />
   <meta name="DC.Language" content="{/article/@lang}" />
   <meta name="DC.Identifier" content="{/article/@id}" />
   <meta name="DC.Creator">
     <xsl:attribute name="content"><xsl:apply-templates mode="entete" select="author"/></xsl:attribute>
   </meta>
   <xsl:apply-templates select="*[local-name()!='author']" mode="entete"/>
-  <!-- Fin Meta -->
-
-  <link rel="alternate" title="Version Docbook/XML" type="text/xml" href="docbook_fr.xml" />
-  <link rel="alternate" title="Version brute" type="text/html" href="xhtml_fr.html" />
-  <link rel="start" title="Accueil" href="/" />
-  <link rel="help" title="Politique d'accessibilité" href="/openwebgroup/demarche_accessibilite/" />
-  <link rel="index" title="Carte" href="/openwebgroup/plan/" />
-  <link rel="shortcut icon" type="images/x-icon" href="/favicon.ico" />
 </xsl:template>
 
 <!--
 ===========================================================
-Premier auteur d'un article pour HEAD du document
+Auteurs d'un article pour HEAD du document
 ===========================================================
 -->
 <xsl:template match="articleinfo/author" mode="entete">

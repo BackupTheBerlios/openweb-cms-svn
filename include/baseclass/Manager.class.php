@@ -1,13 +1,10 @@
 <?php
 /**
  * Classe de base de gestion
- * @abstract
  * @package OpenWeb-CMS
  * @author Laurent Jouanneau
- * @copyright 2003 OpenWeb.eu.org
- * @version 0.0.1
- * @todo
- * @see
+ * @copyright Copyright © 2003 OpenWeb.eu.org
+ * @license http://www.gnu.org/licenses/gpl.html GNU General Public License
  */
 
 
