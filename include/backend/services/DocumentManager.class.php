@@ -5,7 +5,7 @@
  * @subpackage Services
  * @author Laurent Jouanneau
  * @author Florian Hatat
- * @copyright Copyright © 2003 OpenWeb.eu.org
+ * @copyright Copyright Â© 2003 OpenWeb.eu.org
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License
  * @uses Manager
  * @uses ReferenceManager
@@ -19,21 +19,21 @@ require_once (PATH_INC_BACKEND_SERVICE.'ReferenceManager.class.php');
 class DocumentManager extends Manager
 {
   /**
-   * Nombre d'éléments à traiter par page
+   * Nombre d'Ã©lÃ©ments Ã  traiter par page
    * @var integer $nbParPage
    */
   var $nbParPage = 20;
 
   /**
-   * Nombre de liens à afficher dans la liste des pages
+   * Nombre de liens Ã  afficher dans la liste des pages
    * @var integer $nbLiensMax
    */
   var $nbLiensMax = 10;
 
   /**
-   * Récupérer une liste d'articles en fonction de critères
-   * @param   array   $params         tableau associatif contenant les critères de sélection. clé : nom du paramètre, valeur : valeur du paramètre
-   * @param   array   $infosPages     tableau associatif contenant des indications sur le nombre de pages, la liste des numéros de pages disponibles, etc.
+   * RÃ©cupÃ©rer une liste d'articles en fonction de critÃ¨res
+   * @param   array   $params         tableau associatif contenant les critÃ¨res de sÃ©lection. clÃ© : nom du paramÃ¨tre, valeur : valeur du paramÃ¨tre
+   * @param   array   $infosPages     tableau associatif contenant des indications sur le nombre de pages, la liste des numÃ©ros de pages disponibles, etc.
    * @return  array   liste des articles
    * @see Manager::getIndexPages
    * @see Manager::_getListPage
@@ -41,7 +41,7 @@ class DocumentManager extends Manager
    */
   function getListPage($params, &$infosPages)
   {
-    // Construction de la requête en fonction des paramètres
+    // Construction de la requÃªte en fonction des paramÃ¨tres
     $sql = 'SELECT a.doc_id as id, doc_auteurs,
               doc_titre as titre, doc_etat as etat, doc_date_publication,
               doc_date_enregistrement, doc_date_modification,
@@ -53,7 +53,7 @@ class DocumentManager extends Manager
     {
       $where .= ' AND uti_id_soumis = '.intval($params['uti']);
     }
-    if(isset($params['status']) && intval($params['status']) > 0)
+    if(isset($params['status']) && is_numeric($params['status']))
     {
       $where .= ' AND doc_etat = '.trim($params['status']);
     }
@@ -94,7 +94,7 @@ class DocumentManager extends Manager
   }
 
   /**
-   * Récupérer une liste d'article en fonction d'un seul classement
+   * RÃ©cupÃ©rer une liste d'article en fonction d'un seul classement
    * @param   string  $classmt   nom du classement
    * @return  array   liste des articles
    * @see Manager::_getList
@@ -116,7 +116,7 @@ class DocumentManager extends Manager
    * Modifier l'ordre des documents en base pour un seul classement
    * @param   string  $classmt   nom du classement
    * @param   array   $ordres    tableau associatif : doc id => ordre
-   * @return  boolean vrai si réussite
+   * @return  boolean vrai si rÃ©ussite
    */
   function setDocumentOrder($classmt, $ordres)
   {
@@ -142,10 +142,10 @@ class DocumentManager extends Manager
   }
 
   /**
-   * Regénère une partie de la liste de documents
-   * une partie seulement, pour éviter les timeout lors de l'exécution du script
-   * @param  integer   $page     indice renvoyé par l'appel précédent de cette méthode. donner 0 au premier appel
-   * @return integer   indice pour le prochain appel à la méthode, ou 0 si il n'y a plus de document à traiter
+   * RegÃ©nÃ¨re une partie de la liste de documents
+   * une partie seulement, pour Ã©viter les timeout lors de l'exÃ©cution du script
+   * @param  integer   $page     indice renvoyÃ© par l'appel prÃ©cÃ©dent de cette mÃ©thode. donner 0 au premier appel
+   * @return integer   indice pour le prochain appel Ã  la mÃ©thode, ou 0 si il n'y a plus de document Ã  traiter
    */
   function toutRegenerer($page)
   {
@@ -171,7 +171,7 @@ class DocumentManager extends Manager
   }
 
   /**
-   * Nombre de documents enregistrés dans la base de données
+   * Nombre de documents enregistrÃ©s dans la base de donnÃ©es
    * @return integer nombre de documents
    */
   function nbrDocs()

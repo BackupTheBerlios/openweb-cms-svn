@@ -155,6 +155,8 @@ class ReferenceManager extends Manager
     if($only_online)
       $sql .= ' AND d.doc_etat > 0';
 
+    $sql .= ' ORDER BY l.ordre ASC';
+
     $res = $this->_getList($sql);
 
     $liste = array();

@@ -35,10 +35,11 @@ $outputInfos = array(
  * @param string $src fichier source du document
  * @param string $informat format de la source
  * @param string $outformat format de sortie attendu
+ * @param string $dest nom du fichier destination (null si par défaut)
  * @return boolean vrai si tout s'est bien passÃ©
  * @uses $outputInfos
  */
-function outputMake($src, $informat, $outformat)
+function outputMake($src, $informat, $outformat, $dest = null)
 {
   global $outputInfos;
 
@@ -53,7 +54,7 @@ function outputMake($src, $informat, $outformat)
   if(!function_exists($outfn))
     return false;
 
-  return $outfn($src);
+  return $outfn($src, $dest);
 }
 
 /**
@@ -88,31 +89,34 @@ function _output_xsl_generic_transform($filename, $filename_cible, $stylesheet, 
 /**
  * @access private
  */
-function _output_docbook_to_xhtml($src)
+function _output_docbook_to_xhtml($src, $dest)
 {
   global $outputInfos;
   return _output_xsl_generic_transform($src,
-    $outputInfos['docbook']['xhtml']['file'], "xhtml/docbook.xsl", array('path_site_root' => PATH_SITE_ROOT));
+    $dest === null ? $outputInfos['docbook']['xhtml']['file'] : $dest,
+    "xhtml/docbook.xsl", array('path_site_root' => PATH_SITE_ROOT));
 }
 
 /**
  * @access private
  */
-function _output_docbook_to_xhtmlbrut($src)
+function _output_docbook_to_xhtmlbrut($src, $dest)
 {
   global $outputInfos;
   return _output_xsl_generic_transform($src,
-    $outputInfos['docbook']['xhtmlbrut']['file'], "xhtmlbrut/docbook.xsl");
+    $dest === null ? $outputInfos['docbook']['xhtmlbrut']['file'] : $dest,
+    "xhtmlbrut/docbook.xsl");
 }
 
 /**
  * @access private
  */
-function _output_xhtml_to_docbook($src)
+function _output_xhtml_to_docbook($src, $dest)
 {
   global $outputInfos;
   return _output_xsl_generic_transform($src,
-    $outputInfos['xhtml']['docbook']['file'], "docbook/xhtml.openweb.xsl");
+    $dest === null ? $outputInfos['xhtml']['docbook']['file'] : $dest,
+    "docbook/xhtml.openweb.xsl");
 }
 
 ?>

@@ -39,6 +39,15 @@ function getElementsByTagName($node, $name)
  * @todo remplacer les entités XML par les caractères correspondants (&amp;, &lt;, et &gt;)
  * @return string
  */
+function tree2text($element)
+{
+  return preg_replace("/&#([0-9]+);/me", "chr('\\1')", _tree2text($element));
+}
+
+/**
+ * @access private
+ * @see tree2text
+ */
 function _tree2text($element)
 {
   $text = $element->content;
@@ -46,7 +55,7 @@ function _tree2text($element)
     return $text;
   foreach($element->children as $child)
     $text .= _tree2text($child);
-  return preg_replace("/&#([0-9]+);/me", "chr('\\1')", trim($text));
+  return trim($text);
 }
 
 function _prendfiltres($element)
@@ -54,7 +63,7 @@ function _prendfiltres($element)
   $res = array();
 
   foreach(getElementsByTagName($element, "subjectterm") as $child)
-    $res[] = _tree2text($child);
+    $res[] = tree2text($child);
 
   return $res;
 }
@@ -101,9 +110,9 @@ function docbookGetArticleInfoFromFile($filename)
   {
     $firstnames = getElementsByTagName($author, "firstname");
     $surnames = getElementsByTagName($author, "surname");
-    $auteurs[] = (count($firstnames) ? ucfirst(trim(_tree2text($firstnames[0])))
+    $auteurs[] = (count($firstnames) ? ucfirst(trim(tree2text($firstnames[0])))
                    : "").' '.
-                 (count($surnames) ? ucfirst(trim(_tree2text($surnames[0])))
+                 (count($surnames) ? ucfirst(trim(tree2text($surnames[0])))
                    : "");
   }
   $doc->auteurs = utf8_encode(implode(', ', $auteurs));
@@ -113,10 +122,10 @@ function docbookGetArticleInfoFromFile($filename)
   foreach($artinfonode[0]->children as $child)
   {
     /* Récupération des balises <title>, <pubdate> et <date> */
-    if(!strcmp($child->name, "title")) $doc->titre = utf8_encode(_tree2text($child));
-    if(!strcmp($child->name, "titleabbrev")) $doc->titremini = utf8_encode(_tree2text($child));
-    if(!strcmp($child->name, "pubdate")) $doc->pubdate = utf8_encode(_tree2text($child));
-    if(!strcmp($child->name, "date")) $doc->update = utf8_encode(_tree2text($child));
+    if(!strcmp($child->name, "title")) $doc->titre = utf8_encode(tree2text($child));
+    if(!strcmp($child->name, "titleabbrev")) $doc->titremini = utf8_encode(tree2text($child));
+    if(!strcmp($child->name, "pubdate")) $doc->pubdate = utf8_encode(tree2text($child));
+    if(!strcmp($child->name, "date")) $doc->update = utf8_encode(tree2text($child));
 
     if(!strcmp($child->name, "subjectset"))
     {
@@ -125,11 +134,11 @@ function docbookGetArticleInfoFromFile($filename)
         $attribute = utf8_encode($subjnode->getAttribute("role"));
         $doc->classement[$attribute] = array();
         foreach(getElementsByTagName($subjnode, "subjectterm") as $entry)
-          $doc->classement[$attribute][] = utf8_encode(_tree2text($entry));
+          $doc->classement[$attribute][] = utf8_encode(tree2text($entry));
       }
     }
     if(!strcmp($child->name, "abstract"))
-      $doc->accroche = utf8_encode(_tree2text($child));
+      $doc->accroche = utf8_encode(tree2text($child));
   }
 
   return $doc;

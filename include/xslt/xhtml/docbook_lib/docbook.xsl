@@ -43,7 +43,7 @@ Structure générale du document
 	<xsl:apply-templates/>
 </xsl:template>
 
-<xsl:template match="article/title|section/title">
+<xsl:template match="section/title">
 	<xsl:variable name="niveau" select="count(ancestor-or-self::section)+2"/>
 	<xsl:variable name="element">
 		<xsl:choose>
@@ -52,6 +52,7 @@ Structure générale du document
 		</xsl:choose>
 	</xsl:variable>
 	<xsl:element name="{$element}">
+		<xsl:apply-templates select="../@*"/>
 		<xsl:call-template name="output.attrs"/>
 		<xsl:apply-templates/>
 	</xsl:element>

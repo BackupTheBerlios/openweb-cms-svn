@@ -5,7 +5,7 @@ xmlns:tpl="http://openweb.eu.org/tpl"
 xmlns="http://www.w3.org/1999/xhtml"
 exclude-result-prefixes="tpl">
 
-<xsl:template match="table">
+<xsl:template match="table|informaltable">
 	<table width="100%" border="1" rules="all">
 		<xsl:call-template name="output.attrs"/>
 		<xsl:apply-templates select="textobject"/>
@@ -13,7 +13,7 @@ exclude-result-prefixes="tpl">
 	</table>
 </xsl:template>
 
-<xsl:template match="table/textobject/phrase">
+<xsl:template match="table/textobject/phrase|informaltable/textobject/phrase">
 	<xsl:attribute name="summary"><xsl:value-of select="normalize-space(text())"/></xsl:attribute>
 </xsl:template>
 

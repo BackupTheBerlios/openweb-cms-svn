@@ -5,10 +5,10 @@
  * @subpackage Presentation
  * @author Laurent Jouanneau
  * @author Florian Hatat
- * @copyright Copyright © 2003 OpenWeb.eu.org
+ * @copyright Copyright Â© 2003 OpenWeb.eu.org
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License
- * @todo permettre des sélections multiples (oui ça va être compliqué mais il faudra y passer)
- * @todo la requête par défaut ne doit porter que sur les articles non en-ligne (lié au précédent todo)
+ * @todo permettre des sÃ©lections multiples (oui Ã§a va Ãªtre compliquÃ© mais il faudra y passer)
+ * @todo la requÃªte par dÃ©faut ne doit porter que sur les articles non en-ligne (liÃ© au prÃ©cÃ©dent todo)
  */
 
 define('OW_BACKEND_ACTION', 'ACT_DOCUMENTS');
@@ -28,11 +28,12 @@ $um = new UserManager($db);
 $statusLib = $ref->getStatusList();
 $critereLib = $ref->getCriterionList();
 
-// On récupère d'éventuels critères à la page
+// On rÃ©cupÃ¨re d'Ã©ventuels critÃ¨res Ã  la page
 $contraintes = array();
 $contraintes['status'] = isset($_GET['status']) ? $_GET['status'] : 'none';
 $contraintes['type'] = isset($_GET['type']) ? $_GET['type'] : 'none';
 $contraintes['uti'] = isset($_GET['uti']) ? $_GET['uti'] : $_SESSION['utilisateur']['uti_id'];
+$contraintes['pg'] = isset($_GET['pg']) ? $_GET['pg'] : 0;
 
 foreach($critereLib as $nom => $critere)
   $contraintes["cri_$nom"] = isset($_GET["cri_$nom"]) ? $_GET["cri_$nom"]
@@ -42,15 +43,15 @@ foreach($critereLib as $nom => $critere)
 <form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="get">
 
 <fieldset>
-<legend>Critères de tris de la liste</legend>
+<legend>CritÃ¨res de tris de la liste</legend>
 
-<label>Type : <?php htmlSelect('type', $ref->getTypeList(), $contraintes['type'], '', false, 'none', '-- tous --'); ?></label>
-<label>Utilisateur : <?php htmlSelectDB('uti', $um->getUserList(), $contraintes['uti'], 'uti_id', array('uti_prenom', 'uti_nom'), 1, false, 0, '-- tous --'); ?></label>
-<label>État : <?php htmlSelect('status', $statusLib, $contraintes['status'], 1, false, 'none', '-- tous --'); ?></label>
+<label>TypeÂ : <?php htmlSelect('type', $ref->getTypeList(), $contraintes['type'], '', false, 'none', '-- tous --'); ?></label>
+<label>UtilisateurÂ : <?php htmlSelectDB('uti', $um->getUserList(), $contraintes['uti'], 'uti_id', array('uti_prenom', 'uti_nom'), 1, false, 0, '-- tous --'); ?></label>
+<label>Ã‰tatÂ : <?php htmlSelect('status', $statusLib, $contraintes['status'], 1, false, 'none', '-- tous --'); ?></label>
 <?php
   foreach($critereLib as $nom => $critere)
   {
-    echo '<label>', $critere, " : ";
+    echo '<label>', $critere, "Â : ";
     htmlSelect("cri_$nom", $ref->getEntriesList($nom), $contraintes["cri_$nom"], '', false, 'none', '-- tous --');
     echo "</label>\n";
   }
@@ -69,7 +70,7 @@ $listeArticles = $am->getListPage($contraintes, $infosPages);
 
 if(count($listeArticles) == 0)
 {
-  echo '<p>Aucun document ne correspond à ces critères.</p>', "\n";
+  echo '<p>Aucun document ne correspond Ã  ces critÃ¨res.</p>', "\n";
   exit;
 }
 
@@ -77,9 +78,9 @@ if(count($listeArticles) == 0)
 echo '<table class="tableliste">', "\n";
 echo '<caption>Liste des documents &#8212; page ', $infosPages['pagecour'],
      '/', $infosPages['totalpage'], '</caption>', "\n";
-echo "<thead>\n  <tr><th>Numéro</th>\n  <th>Document</th>\n  <th>Auteur</th>\n  <th>Utilisateur</th>\n <th>État</th></tr>\n</thead>\n<tbody>\n";
+echo "<thead>\n  <tr><th>NumÃ©ro</th>\n  <th>Document</th>\n  <th>Auteur</th>\n  <th>Utilisateur</th>\n <th>Ã‰tat</th></tr>\n</thead>\n<tbody>\n";
 
-$i = 0;
+$i = ($infosPages['pagecour'] - 1) * $am->nbParPage;
 foreach($listeArticles as $art)
 {
   echo '<tr><td>', ++$i, '</td><td><a href="document_details.php?id=',
@@ -93,14 +94,14 @@ echo '</tbody>';
 
 if(count($infosPages['pages']) > 1)
 {
-  echo '<tfoot><tr><td colspan="4">';
+  echo '<tfoot><tr><td colspan="0">';
   // barre de navigation entre les pages
   $url = new JUrl($_SERVER["PHP_SELF"], $contraintes, array_keys($contraintes));
 
   if($infosPages['pageprec'])
   {
     $url->set('pg', $infosPages['pageprec']);
-    echo '<a href="', $url->getUrl(), '">Page précédente</a>';
+    echo '<a href="', $url->getUrl(), '">Page prÃ©cÃ©dente</a>';
   }
 
   if($infosPages['fenprec'])

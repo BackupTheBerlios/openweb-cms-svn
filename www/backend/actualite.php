@@ -16,7 +16,7 @@ require_once('../../include/backend/init.inc.php');
 
 
 <ul>
-<li><a href="/actualite/ecrire/index.php">Login</a></li>
+<li><a href="/dotclear/ecrire/index.php">Login</a></li>
 </ul>
 <p>
 </p>

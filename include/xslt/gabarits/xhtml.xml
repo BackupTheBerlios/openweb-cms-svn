@@ -41,7 +41,7 @@ xmlns:tpl="http://openweb.eu.org/tpl">
           <div id="moteurint">
             <label for="sp-q">Rechercher sur ce site :</label>
             <input name="sp-q" id="sp-q" accesskey="4"
-            value="Accès clavier touche 4" tabindex="4" class="champs"
+            value="Accès clavier touche 4" class="champs"
             onfocus="this.value=''" />
             <input type="submit" name="Submit" value="Ok" class="valid" />
             <input type="hidden" name="sp-a" value="sp1002850f" />

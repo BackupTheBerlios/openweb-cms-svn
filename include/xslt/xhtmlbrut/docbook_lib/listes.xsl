@@ -94,13 +94,25 @@ Question-réponses
 <xsl:template match="answer">
 	<dd>
 		<xsl:call-template name="output.attrs"/>
-		<xsl:apply-templates/>
+		<xsl:apply-templates select="*[local-name() != 'label']"/>
 	</dd>
 </xsl:template>
 
-<xsl:template match="answer[count(*)=1]/para">
-	<xsl:call-template name="output.attrs"/>
-	<xsl:apply-templates/>
+<xsl:template match="answer/para[1]">
+	<p>
+		<xsl:call-template name="output.attrs"/>
+		<xsl:apply-templates select="../label"/>
+		<xsl:apply-templates/>
+	</p>
+</xsl:template>
+
+<xsl:template match="label">
+	<strong>
+		<xsl:call-template name="output.attrs"/>
+		<xsl:apply-templates/>
+		<xsl:text> &#8212;</xsl:text>
+	</strong>
+	<xsl:text> </xsl:text>
 </xsl:template>
 
 </xsl:stylesheet>
