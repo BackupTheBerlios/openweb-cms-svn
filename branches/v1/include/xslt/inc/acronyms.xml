@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!-- TODO utiliser la structure glossary de Docbook ? -->
+<acronyms>
+  <word acronym="(X)HTML" lang="en">(eXtensible) HyperText Markup Language</word>
+  
+  <word acronym="AFNOR" lang="fr">Association Française de NORmalisation</word>
+  
+  <word acronym="ANSI" lang="en">American National Standard Institute</word>
+  
+  <word acronym="APINC" lang="fr">Association Pour l'Internet Non Commercial</word>
+  
+  <word acronym="ASCII" lang="en">American Standard Code for Information Interchange</word>
+  
+  <word acronym="ASP" lang="en">Active Server Pages</word>
+  
+  <word acronym="AOL" lang="en">America On Line</word>
+  
+  <word acronym="CSS" lang="en">Cascading Style Sheets</word>
+  
+  <word acronym="DHTML" lang="en">Dynamic HyperText Markup Language</word>
+  
+  <word acronym="DOM" lang="en">Document Object Model</word>
+  
+  <word acronym="DTD" lang="en">Document Type Definition</word>
+  
+  <word acronym="DUT" lang="fr">Diplôme Universitaire de Technologie</word>
+  
+  <word acronym="ECMA" lang="en">European Computer Manufacturer Association</word>
+  
+  <word acronym="FAI" lang="fr">Fournisseur d'Acces à Internet</word>
+  
+  <word acronym="FAQ" lang="fr">Foire Aux Questions</word>
+  
+  <word acronym="FTP" lang="en">File Transfer Protocol</word>
+  
+  <word acronym="FIDEV" lang="fr">Formation et Insertion pour DEficients Visuels</word>
+  
+  <word acronym="HTML" lang="en">HyperText Markup Language</word>
+  
+  <word acronym="HTTP" lang="en">HyperText Transfer Protocol</word>
+  
+  <word acronym="IETF" lang="en">Internet Engineering Task Force</word>
+  
+  <word acronym="INRIA" lang="fr">Institut National de Recherche en Informatique et en Automatique</word>
+  
+  <word acronym="IP" lang="en">Internet Protocol</word>
+  
+  <word acronym="IRC" lang="en">Internet Relay Chat</word>
+  
+  <word acronym="ISO" lang="en">International Standard Organization</word>
+  
+  <word acronym="IUT" lang="fr">Institut Universitaire de Technologie</word>
+  
+  <word acronym="JS" lang="en">JavaScript</word>
+  
+  <word acronym="MIME" lang="en">Multipurpose Internet Mail Extension</word>
+  
+  <word acronym="MIT" lang="en">Massachussetts Institute of Technology</word>
+  
+  <word acronym="MSIE" lang="en">MicroSoft Internet Explorer</word>
+  
+  <word acronym="OASIS" lang="en">Organization for the Advancement of Structured Information Standards</word>
+  
+  <word acronym="P3P" lang="en">Platform for Privacy Preferences Project</word>
+  
+  <word acronym="PC" lang="en">Personnal Computer</word>
+  
+  <word acronym="PHP" lang="en">PHP: Hypertext Preprocessor</word>
+  
+  <word acronym="PICS" lang="en">Platform for Internet Content Selection</word>
+  
+  <word acronym="PNG" lang="en">Portable Network Graphics</word>
+  
+  <word acronym="RDF" lang="en">Resource Description Framework</word>
+  
+  <word acronym="RFC" lang="en">Request For Comment</word>
+  
+  <word acronym="RSS" lang="en">RDF Site Summary</word>
+  
+  <word acronym="SGML" lang="en">Standard Generalized Markup Language</word>
+  
+  <word acronym="SMIL" lang="en">Synchronized Multimedia Integration Language</word>
+  
+  <word acronym="SSII" lang="en">Société de Service et d'Ingénierie Informatique</word>
+  
+  <word acronym="SVG" lang="en">Scalable Vector Graphics</word>
+  
+  <word acronym="TAG" lang="en">Technical Architecture Group</word>
+  
+  <word acronym="TCP" lang="en">Transmission Control Protocol</word>
+  
+  <word acronym="URI" lang="en">Universal Resource Identifier</word>
+  
+  <word acronym="URL" lang="en">Uniform Resource Locator</word>
+  
+  <word acronym="URN" lang="en">Universal Resource Name</word>
+  
+  <word acronym="W3C" lang="en">World Wide Web Consortium</word>
+  
+  <word acronym="WAI" lang="en">Web Accessibility Initiative</word>
+  
+  <word acronym="WYSIWYG" lang="en">What You See Is What You Get</word>
+  
+  <word acronym="WWW" lang="en">World Wide Web</word>
+  
+  <word acronym="XHTML" lang="en">eXtensible HyperText Markup Language</word>
+  
+  <word acronym="XML" lang="en">eXtensible Markup Language</word>
+  
+  <word acronym="XSL" lang="en">eXtensible Stylesheet Language</word>
+  
+  <word acronym="XSLT" lang="en">eXtensible Stylesheet Language Transformation</word>
+
+  <word acronym="API" lang="en">Application Programming Interface</word>
+</acronyms>

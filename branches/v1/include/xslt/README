@@ -1,0 +1,44 @@
+======================================
+  OpenWeb-CMS, feuilles XSLT
+======================================
+
+* Licence
+
+Copyright (C) 2003 Fabrice BONNY, Florian HATAT, Olivier MEUNIER
+
+Ce programme est un logiciel libre: vous pouvez le redistribuer
+et/ou le modifier selon les termes de la "GNU General Public
+License", tels que publiés par la "Free Software Foundation"; soit
+la version 2 de cette licence ou (à votre choix) toute version
+ultérieure.
+
+Ce programme est distribué dans l'espoir qu'il sera utile, mais
+SANS AUCUNE GARANTIE, ni explicite ni implicite; sans même les
+garanties de commercialisation ou d'adaptation dans un but spécifique.
+
+Se référer à la "GNU General Public License" pour plus de détails.
+
+Vous devriez avoir reçu une copie de la "GNU General Public License"
+en même temps que ce programme; sinon, écrivez a la "Free Software
+Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA".
+
+* Ça fait quoi ? Ça marche comment ?
+
+Ces feuilles XSLT permettent de transformer tout ce qui s'écrit en XML
+en autre chose et dont nous avons eu besoin pour OpenWeb-CMS.
+Notamment les transformations :
+- Docbook vers XHTML ;
+- XHTML vers Docbook.
+Testées avec Sablotron.
+
+* Liens utiles
+
+XHTML 1.0 The Extensible HyperText Markup Language (Second Edition) :
+  <http://www.w3.org/TR/xhtml1/>
+XSL Transformations (XSLT) :
+  <http://www.w3.org/TR/xslt>
+XML Path Language (XPath) :
+  <http://www.w3.org/TR/xpath>
+Extensible Markup Language (XML) 1.0 :
+  <http://www.w3.org/TR/REC-xml>
+
