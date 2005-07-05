@@ -131,6 +131,7 @@ class swish
     function make_result()
     {
         $i=0;
+	$this->arry_res = array();
         
         //On passe en revue chaque ligne du tableau
         foreach($this->arry_swish as $value)
