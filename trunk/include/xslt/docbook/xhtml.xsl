@@ -474,7 +474,7 @@ Templates mangeurs d'attributs
 <!-- La suite calcule le nombre de colonnes dans le tableau, comme précisé
      sur http://www.w3.org/TR/html4/struct/tables.html#h-11.2.4.3
      Ça peut sembler un peu compliqué mais l'ensemble doit pouvoir s'en
-     titre même avec un tableau mal fait mais valide. -->
+     tirer même avec un tableau mal fait mais valide. -->
       <xsl:attribute name="cols">
         <xsl:choose>
           <xsl:when test="html:col or html:colgroup">
