@@ -128,7 +128,7 @@ page.
 ===========================================================
 -->
 <xsl:template match="*[name()='a' and namespace-uri()='http://www.w3.org/1999/xhtml'][@href='#texte']" mode="template">
-  <a href="#texteaccueil">
+  <a href="#actualite">
     <xsl:for-each select="attribute::*">
       <xsl:if test="name()!='href'">
         <xsl:attribute name="{name()}"><xsl:value-of select="."/></xsl:attribute>
