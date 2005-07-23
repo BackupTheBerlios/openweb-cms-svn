@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr"
+xmlns:tpl="http://openweb.eu.org/tpl">
+  <!-- En tête du document -->
+  <tpl:head>
+    <title>Openweb.eu.org - <tpl:title /></title>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Script-Type" content="text/javascript" />
+    <meta http-equiv="Content-Style-Type" content="text/css" />
+    <meta name="revisit-after" content="15 days" />
+    <meta name="robots" content="index,follow" />
+
+    <tpl:style-switcher-links/>
+
+    <link rel="author" title="Auteurs" href="/openwebgroup/membres/" />
+    <link rel="copyright" title="Conditions de réutilisation" href="/openwebgroup/licence/" />
+    <link rel="start" title="Accueil" href="/" />
+    <link rel="help" title="Politique d'accessibilité" href="/openwebgroup/demarche_accessibilite/" />
+    <link rel="index" title="Carte" href="/openwebgroup/plan/" />
+    <link rel="shortcut icon" type="images/x-icon" href="/favicon.ico" />
+
+    <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" />
+    <meta name="DC.Publisher" content="OpenWebGroup.eu.org" />
+  </tpl:head>
+  <body>
+    <!-- Début Page -->
+    <div id="page">
+      <div id="accessible">
+        <ul>
+          <li><a href="/openwebgroup/demarche_accessibilite/">Politique
+            d'accessibilité</a></li>
+          <li><a href="#texte">Aller au texte</a></li>
+          <li class="dernier"><a href="#menus">Aller au menu</a></li>
+        </ul>
+        <tpl:style-switcher-form/>
+      </div>
+      <div id="moteur">
+        <form id="recherche" method="get" action="/recherche/">
+          <div id="moteurint">
+            <label for="q">Recherche sur ce site :</label>
+            <input name="q" id="q" accesskey="4" value="" class="champs" />
+            <input type="submit" name="Submit" value="Ok" class="valid" />
+          </div>
+        </form>
+      </div>
+      <div id="logo">
+        <h1><a href="/" title="Retour en page d'accueil"><img
+          src="/img/logo.png" width="358" height="94"
+          alt="OpenWeb, pour les standards du web" /></a></h1>
+      </div>
+      <tpl:content />
+      <div id="menus">
+        <!-- Début Profil -->
+        <div id="profil">
+          <h2>Consultez ce site selon <em>votre profil</em></h2>
+          <tpl:classements critere="profil" />
+        </div>
+        <!-- Fin Profil -->
+        <div id="sectionmenus">
+          <!-- Début Accueil -->
+          <div id="accueil">
+            <ul>
+              <li><a href="/">Accueil</a></li>
+              <li><a href="/openwebgroup/openwebgroup/">Présentation</a></li>
+              <li><a href="/humeurs/">Humeur</a></li>
+              <li><a href="/actualite/">Actualité</a></li>
+	      <li><a href="/articles/">Articles</a></li>
+            </ul>
+          </div>
+          <!-- Fin Accueil -->
+          <tpl:critere name="technologie" />
+          <tpl:critere name="theme" />
+          <div id="ressources">
+            <h2>Ressources</h2>
+            <ul>
+              <li><a href="/ressources/validation/">Outils</a></li>
+              <li><a href="/ressources/specifications/">Spécifications</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- Fin Menus -->
+      <!-- Début Ours -->
+      <div id="ours">
+        <ul>
+          <li><a href="/openwebgroup/plan/">Plan de site</a></li>
+          <li><a href="/openwebgroup/contact/">Contacts</a></li>
+          <li><a href="/openwebgroup/membres/">Le collectif et ses
+            membres</a></li>
+          <li><a href="/openwebgroup/demarche_confidentialite/">Politique de
+            confidentialité</a></li>
+          <li><a href="/openwebgroup/licence/">Conditions de
+            réutilisation</a></li>
+	  <li class="dernier"><a href="/openwebgroup/contribution/">Proposer vos contributions</a></li>
+        </ul>
+        <p>Page valide <a href="http://validator.w3.org/check/referer"
+        title="Vérifier la validité de cette page">XHTML 1 Strict</a>, 
+        <a href="http://jigsaw.w3.org/css-validator/check/referer"
+           title="Vérifier la validité de la feuille de styles">CSS2</a> et
+        <a href="http://www.w3.org/WAI/WCAG1AA-Conformance"
+        title="W3C Web accessibility initiative">accessible AA</a>.
+        <br />
+        Ce site s'affiche mieux dans un navigateur conforme aux standards, 
+        <a href="/openwebgroup/demarche_standard/">voici pourquoi</a>.
+        <br />
+        Site hébergé par l'<a href="http://www.apinc.org/"><acronym
+          title="Association pour l'Internet Non Commercial"
+          xml:lang="fr">APINC</acronym></a>
+        <img src="/img/apinc.png" width="16" height="15" alt="" title="" />
+        et actualités dopées par <a href="http://dotclear.net/">Dotclear</a>.</p>
+      </div>
+      <!-- Fin Ours -->
+    </div>
+  </body>
+</html>

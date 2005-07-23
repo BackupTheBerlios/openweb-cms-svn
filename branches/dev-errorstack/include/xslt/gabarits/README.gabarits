@@ -1,0 +1,6 @@
+Appels <tpl:...> dans le gabarit.
+- <tpl:head>...</tpl:head> : recopie le contenu dans une balise <head> XHTML
+  et peut ajouter des en-têtes spécifiques.
+- <tpl:title /> : remplacé par le titre du document.
+- <tpl:comment>...</tpl:comment> : ajoute un commentaire dans la sortie.
+- <tpl:content /> : remplacé par le contenu du document.

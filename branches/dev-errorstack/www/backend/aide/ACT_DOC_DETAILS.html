@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../backend.css"  media="all" type="text/css" title="Theme classique" />
+    <title>Backend Openweb - Aide - Détails d'un document</title>
+</head>
+<body>
+<h1>Détails d'un document</h1>
+<div id="contenu">
+<p>Cette page présente le détail des informations et les actions disponibles
+pour un document existant.</p>
+<p>Le <dfn>type</dfn> du document indique la partie du site dans laquelle le
+document se trouvera (le plus souvent dans la section <dfn>article</dfn> ou
+<dfn>intro</dfn>).</p>
+<p>Le champ <dfn>auteurs</dfn> indique le noms des auteurs tels qu'ils sont
+indiqués dans la source du document (il ne correspond pas nécessairement
+à l'utilisateur du backend qui a pris en charge sa publication). De même, les
+<dfn>date de publication</dfn> et <dfn>date de modification</dfn> sont celles
+qui sont indiqués dans la source et non les dates d'ajout ou de modification
+dans le backend (cela permet de corriger une erreur dans un document sans le
+faire apparaître dans la section <q>Derniers articles</q> de la page
+d'accueil).</p>
+<p>La section <dfn>Formats disponibles</dfn> permet de consulter le document
+dans tous les formats disponibles depuis le backend, et éventuellement depuis
+le site si l'article est en-ligne. <em>Un simple rédacteur ne peut pas
+consulter un document dans l'état <dfn>temporaire</dfn> si ce dernier a été
+ajouté par un autre rédacteur : c'est le principe de l'état temporaire, qui
+permet au rédacteur de préparer son document avant de le soumettre à tout le
+monde</em>. En revanche, un rédacteur en chef a le droit de faire ce qu'il
+veut avec le document.</p>
+<p>Selon les permissions que vous avez sur le document, la section
+<dfn>Fichiers annexes</dfn> permet :</p>
+<ul>
+<li>d'ajouter des fichiers annexes ;</li>
+<li>de les supprimer ;</li>
+<li>de les consulter.</li>
+</ul>
+<p>La publication d'un document suit trois étapes :</p>
+<ol>
+<li>le document est téléchargé sur le backend par le rédacteur, il est dans l'état <dfn>temporaire</dfn> : le rédacteur est le seul à pouvoir le consulter, il vérifie que l'upload s'est déroulé correctement et ajoute les annexes ;</li>
+<li>le rédacteur passe alors le document de l'état temporaire en <dfn>hors-ligne</dfn> : tout le monde peut relire le document et le contrôle de la publication passe alors aux mains des rédacteurs en chef, qui sont les seuls à pouvoir modifier le document. Un rédacteur en chef peut décider qu'un document n'est pas encore prêt et le remettre en temporaire pour permettre au rédacteur d'apporter ses modifications ;</li>
+<li>quand le document est relu et prêt à être publié, le rédacteur en chef peut mettre <dfn>en-ligne</dfn> le document.</li>
+</ol>
+</div>
+</body>
+</html>
