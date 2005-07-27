@@ -2,9 +2,9 @@
 /**
  * Déclaration de constantes
  * @package OpenWeb-CMS
- * @module  backend
+ * @subpackage Backend
  * @copyright 2003 OpenWeb.eu.org
- * @author  Laurent Jouanneau <jouanneau@netcourrier.com>
+ * @author Laurent Jouanneau <jouanneau@netcourrier.com>
  * @version 1.0
  */
 

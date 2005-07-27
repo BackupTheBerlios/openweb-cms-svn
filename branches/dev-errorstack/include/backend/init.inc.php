@@ -9,8 +9,8 @@
  *  - identification et gestion des droits ;
  *  - gestion du gabarit de sortie XHTML.
  *
- * @package Backend
- * @subpackage Coordination
+ * @package OpenWeb-CMS
+ * @subpackage Backend
  * @author Laurent Jouanneau
  * @author Florian Hatat
  * @copyright Copyright © 2003 OpenWeb.eu.org
@@ -33,10 +33,10 @@ error_reporting(E_ALL);
 // Inclusion des bibliothèques de PEAR
 $pear_path = realpath(PATH_INC_BACKEND.'../../pear');
 ini_set('include_path', ini_get('include_path').':'.$pear_path);
-  // nécessaire pour PEAR sur le serveur d'OpenWeb
 
-require_once "Auth/Auth.php";
-require_once "DB.php";
+require_once("Auth/Auth.php");
+require_once("DB.php");
+require_once("PEAR/ErrorStack.php");
 
 // Paramètres pour la base de données
 require_once(PATH_INCLUDE.'database.inc.php');

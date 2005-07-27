@@ -45,7 +45,7 @@ class Document
 
   /**
    * liste des messages d'erreurs survenus pendant les traitements
-   * @var PEAR_ErrorStack
+   * @var object PEAR_ErrorStack
    */
   var $errors;
 
@@ -66,7 +66,7 @@ class Document
     $this->ref = new ReferenceManager($this->db);
 
     $this->id = $this->type = $this->infos = null;
-    $this->errors = &PEAR_ErrorStack::singleton('OpenWeb_Backend_Document');
+    $this->errors = &PEAR_ErrorStack::singleton('OpenWeb::Backend::Document');
 
     if($doc_id !== null)
       $this->load($doc_id);
@@ -81,27 +81,34 @@ class Document
    */
   function setContentFromDocbook($fichier)
   {
-    require_once(PATH_INC_BACKEND_SERVICE."DocbookParse.lib.php");
-
-    $errors = &PEAR_ErrorStack::singleton('OpenWeb_Backend_DocbookParse');
+    $errors = &PEAR_ErrorStack::singleton('OpenWeb::Backend::DocInfos');
+    /**
+     * @todo pas bon, changer le nom de fonction, traiter les erreurs
+     */
     $errors->pushCallback(array(&$this, '_repackageErrorStack'));
-    
-    $this->infos = docbookGetArticleInfoFromFile($fichier);
-    $this->infos->verifyRepertoire();
+
+    $this->infos = new DocInfos($this->db);
+    $this->infos->setFromDocbook($fichier);
+    $this->infos->check();
 
     $errors->popCallback();
 
-    if($this->errors->hasErrors())
-      return false;
+    /* On n'arrête pas le traitement immédiatement, pour signaler le maximum
+    d'erreurs */
+#    if($this->errors->hasErrors('error'))
+#      return false;
 
-    $errors = &PEAR_ErrorStack::singleton('OpenWeb_Backend_DocumentType');
+    $errors = &PEAR_ErrorStack::singleton('OpenWeb::Backend::DocumentType');
+    /**
+     * @todo pas bon, changer le nom de fonction, traiter les erreurs
+     */
     $errors->pushCallback(array(&$this, '_repackageErrorStack'));
     
     $this->type = new DocumentType($this->infos->type);
 
     $errors->popCallback();
 
-    if($this->errors->hasErrors())
+    if($this->errors->hasErrors('error'))
       return false;
 
     /* lorsque l'article est tout nouveau, on vérifie en base si le
@@ -353,6 +360,9 @@ class Document
 
     $this->id = intval($res['doc_id']);
 
+    /**
+     * @todo appeler DocInfos::setFromDB()
+     */
     $this->infos = new DocInfos();
     $this->infos->type = $res['typ_libelle'];
     $this->infos->auteurs = $res['doc_auteurs'];
@@ -558,6 +568,16 @@ class Document
   {
     $this->errors->push(17, 'error', array(), false, $err);
     return PEAR_ERRORSTACK_IGNORE;
+  }
+
+  /**
+   * Rattrape et traite les erreurs renvoyées par le paquet DB
+   * @param object PEAR_Error $error
+   */
+  function _DBErrorHandler($error)
+  {
+    $params = array('pearerror' => $error);
+    $this->errors->push(OW_DB_OFFLINE, 'error', $params, $error->getMessage());
   }
 }
 
