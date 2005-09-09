@@ -1,20 +1,31 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 <criteres>
   <critere name="profil" libelle="Profil">
   <classements>
-    <entry><name>debutant</name><libelle>D�butants</libelle><location></location></entry>
-    <entry><name>decideur</name><libelle>D�cideurs</libelle><location></location></entry>
+    <entry><name>expert</name><libelle>Expert</libelle><location>/expert/</location></entry>
+    <entry><name>debutant</name><libelle>Débutant</libelle><location>/debutant/</location></entry>
+    <entry><name>decideur</name><libelle>Décideur</libelle><location>/decideur/</location></entry>
+    <entry><name>gourou</name><libelle>Gourou</libelle><location>/gourou/</location></entry>
   </classements>
 </critere>
   <critere name="technologie" libelle="Technologie">
   <classements>
-    <entry><name>xhtml</name><libelle>XHTML</libelle><location></location></entry>
-    <entry><name>css</name><libelle>CSS</libelle><location></location></entry>
-    <entry><name>dom</name><libelle>DOM</libelle><location></location></entry>
+    <entry><name>xhtml</name><libelle>(X)HTML</libelle><location>/xhtml/</location></entry>
+    <entry><name>rss</name><libelle>RSS</libelle><location>/rss/</location></entry>
+    <entry><name>css</name><libelle>CSS</libelle><location>/css/</location></entry>
+    <entry><name>dom</name><libelle>DOM</libelle><location>/dom/</location></entry>
+    <entry><name>png</name><libelle>PNG</libelle><location>/png/</location></entry>
   </classements>
 </critere>
-  <critere name="theme" libelle="Th�me">
+  <critere name="theme" libelle="Thème">
   <classements>
+    <entry><name>pages_dynamiques</name><libelle>Pages dynamiques</libelle><location>/pages_dynamiques/</location></entry>
+    <entry><name>navigateurs</name><libelle>Navigateurs</libelle><location>/navigateurs/</location></entry>
+    <entry><name>accessibilite</name><libelle>Accessibilité</libelle><location>/accessibilite/</location></entry>
+    <entry><name>etude_cas</name><libelle>Études de cas</libelle><location>/etude_cas/</location></entry>
+    <entry><name>mise_en_page</name><libelle>Mise en page</libelle><location>/mise_en_page/</location></entry>
+    <entry><name>multimedia</name><libelle>Multimédia</libelle><location>/multimedia/</location></entry>
+    <entry><name>structure</name><libelle>Structure</libelle><location>/structure/</location></entry>
   </classements>
 </critere>
 </criteres>

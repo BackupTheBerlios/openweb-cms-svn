@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<sorties>
+  <format name="xhtml" title="XHTML" file="index.php"/>
+  <format name="xhtmlbrut" title="XHTML brut" file="xhtml.xml"/>
+  <format name="docbook" title="XML/Docbook" file="docbook.xml"/>
+</sorties>

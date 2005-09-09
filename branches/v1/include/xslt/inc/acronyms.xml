@@ -15,6 +15,8 @@
   
   <word acronym="AOL" lang="en">America On Line</word>
   
+  <word acronym="CMMI" lang="en">Capability Maturity Model Integration</word>
+  
   <word acronym="CSS" lang="en">Cascading Style Sheets</word>
   
   <word acronym="DHTML" lang="en">Dynamic HyperText Markup Language</word>
@@ -49,6 +51,8 @@
   
   <word acronym="ISO" lang="en">International Standard Organization</word>
   
+  <word acronym="ITIL" lang="en">IT Infrastructure Library</word>
+  
   <word acronym="IUT" lang="fr">Institut Universitaire de Technologie</word>
   
   <word acronym="JS" lang="en">JavaScript</word>
@@ -73,13 +77,17 @@
   
   <word acronym="RDF" lang="en">Resource Description Framework</word>
   
-  <word acronym="RFC" lang="en">Request For Comment</word>
+  <word acronym="RFC" lang="en">Request For Comment</word> 
+	
+  <word acronym="RH" lang="fr">Ressources humaines</word>
   
   <word acronym="RSS" lang="en">RDF Site Summary</word>
   
   <word acronym="SGML" lang="en">Standard Generalized Markup Language</word>
   
   <word acronym="SMIL" lang="en">Synchronized Multimedia Integration Language</word>
+  
+  <word acronym="SPICE" lang="en">Software Process Improvement and Capability Determination</word>
   
   <word acronym="SSII" lang="en">Société de Service et d'Ingénierie Informatique</word>
   
@@ -112,4 +120,8 @@
   <word acronym="XSLT" lang="en">eXtensible Stylesheet Language Transformation</word>
 
   <word acronym="API" lang="en">Application Programming Interface</word>
+
+  <word acronym="ppp" lang="fr">points par pouce</word>
+
+  <word acronym="ISBN" lang="en">International Standard Book Number</word>
 </acronyms>

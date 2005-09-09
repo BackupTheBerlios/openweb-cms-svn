@@ -3,6 +3,7 @@
 require_once('../include/frontend/init.inc.php');
 require_once(PATH_INC_FRONTEND.'FrontService.class.php');
 require_once(PATH_INC_FRONTEND.'html_listedoc.inc.php');
+require_once(PATH_INC_FRONTEND.'html_agreg_rss.inc.php');
 
 $fs = new FrontService($db);
 
@@ -45,6 +46,18 @@ OW_liste_document(array('type' => 'H'), 1, 'Humeur&#8230;');
     <p class="tous"><a href="/humeurs/">Toutes les humeurs</a></p>
   </div>
   <!-- Fin Humeur -->
+
+  <!-- Début Blogs -->
+  <div id="blogs">
+    <h2>Blogs</h2>
+<?php
+OW_liste_rss();
+?>
+  </div>
+  <!-- Fin Blogs -->
+
+
+
 
 </div>
 <!-- Fin Intro -->

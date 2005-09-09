@@ -1,0 +1,8 @@
+<?php
+
+$dbhost='localhost';
+$dbbase='your_database';
+$dbuser='user';
+$dbpass='password';
+
+?>

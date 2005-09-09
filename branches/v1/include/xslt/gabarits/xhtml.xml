@@ -36,17 +36,11 @@ xmlns:tpl="http://openweb.eu.org/tpl">
         <tpl:style-switcher-form/>
       </div>
       <div id="moteur">
-        <form id="recherche" method="get"
-        action="http://search.atomz.com/search/">
+        <form id="recherche" method="get" action="/recherche/">
           <div id="moteurint">
-            <label for="sp-q">Rechercher sur ce site :</label>
-            <input name="sp-q" id="sp-q" accesskey="4"
-            value="Accès clavier touche 4" class="champs"
-            onfocus="this.value=''" />
+            <label for="q">Recherche sur ce site :</label>
+            <input name="q" id="q" accesskey="4" value="" class="champs" />
             <input type="submit" name="Submit" value="Ok" class="valid" />
-            <input type="hidden" name="sp-a" value="sp1002850f" />
-            <input type="hidden" name="sp-p" value="all" />
-            <input type="hidden" name="sp-f" value="ISO-8859-1" />
           </div>
         </form>
       </div>

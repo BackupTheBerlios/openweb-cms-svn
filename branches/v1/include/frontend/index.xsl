@@ -122,6 +122,24 @@ maquette pour la page d'accueil
 
 <!--
 ===========================================================
+Sur la page d'accueil, le div#texte est remplacé par
+div#texteaccueil : en tenir compte dans le lien en tête de
+page.
+===========================================================
+-->
+<xsl:template match="*[name()='a' and namespace-uri()='http://www.w3.org/1999/xhtml'][@href='#texte']" mode="template">
+  <a href="#actualite">
+    <xsl:for-each select="attribute::*">
+      <xsl:if test="name()!='href'">
+        <xsl:attribute name="{name()}"><xsl:value-of select="."/></xsl:attribute>
+      </xsl:if>
+    </xsl:for-each>
+    <xsl:apply-templates mode="template"/>
+  </a>
+</xsl:template>
+
+<!--
+===========================================================
 Template de création de commentaire depuis le gabarit
 ===========================================================
 -->
