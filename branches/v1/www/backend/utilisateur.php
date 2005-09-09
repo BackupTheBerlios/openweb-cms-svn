@@ -31,11 +31,14 @@ if(isset($_POST['setinfos']))
   if(isset($_POST['uti_rss']))
     $infos['uti_rss'] = trim($_POST['uti_rss']);
 
-  if(isset($_POST['mdp_new']) && isset($_POST['mdp_cfm']))
-    if($_POST['mdp_new'] == $_POST['mdp_cfm'])
+  if($_POST['mdp_new'] !=''){
+    if($_POST['mdp_new'] == $_POST['mdp_cfm']){
       $infos['uti_password'] = $_POST['mdp_new'];
-    else
+      echo '<p>Nouveau mot de passe enregistré</p>';
+    }else{
       echo "<p>Mots de passe différents</p>\n";
+    }
+  }
   $um->setUserDatas($infos);
   $_SESSION['utilisateur'] = $um->getUserDatas($infos['uti_login']);
 }
