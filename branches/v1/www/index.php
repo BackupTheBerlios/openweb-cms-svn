@@ -100,6 +100,12 @@ OW_liste_document(array('type' => 'A'), 3, 'Derniers articles&#8230;');
 </div>
 <?php
 $buf = ob_get_contents();
+/*
+$fic = fopen(PATH_SITE_ROOT.'temp/ob_get_content.html','w');
+fwrite($fic, $buf);
+fclose($fic);
+*/
+
 $xh = xslt_create();
 $args = array('/_xml' => '<'.'?xml version="1.0" encoding="utf-8"?'.'>'.$buf);
 ob_end_clean();
