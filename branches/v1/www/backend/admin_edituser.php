@@ -30,6 +30,9 @@ if(isset($_POST['save_user']))
      par le navigateur pour le contrôle : on prend donc 0 par défaut */
   if(!isset($_POST['uti_valide']))
     $newinfos['uti_valide'] = 0;
+  else
+    $newinfos['uti_valide'] = 1;
+
   /* Le mot de passe n'est pas rempli par défaut : si le contrôle est vide,
      on ne change pas */
   if(!empty($_POST['uti_password']))
