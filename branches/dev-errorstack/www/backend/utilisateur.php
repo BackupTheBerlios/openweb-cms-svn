@@ -28,11 +28,14 @@ if(isset($_POST['setinfos']))
     $infos['uti_lang'] = $_POST['uti_lang'];
   if(isset($_POST['uti_charset']))
     $infos['uti_charset'] = $_POST['uti_charset'];
-  if(isset($_POST['mdp_new']) && isset($_POST['mdp_cfm']))
-    if($_POST['mdp_new'] == $_POST['mdp_cfm'])
+  if($_POST['mdp_new'] !=''){
+    if($_POST['mdp_new'] == $_POST['mdp_cfm']){
       $infos['uti_password'] = $_POST['mdp_new'];
-    else
+      echo '<p>Nouveau mot de passe enregistré</p>';
+    }else{
       echo "<p>Mots de passe différents</p>\n";
+    }
+  }
   $um->setUserDatas($infos);
   $_SESSION['utilisateur'] = $um->getUserDatas($infos['uti_login']);
 }

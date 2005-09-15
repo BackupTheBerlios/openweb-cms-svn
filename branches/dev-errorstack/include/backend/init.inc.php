@@ -53,10 +53,10 @@ require_once(PATH_INC_BACKEND.'logon.php');
 $openwebAuth = new Auth("DB", $options, 'ow_html_login_box', true);
 $openwebAuth->start();
 
-if(isset($_GET['logon']))
+if(isset($_GET['logon']) && $openwebAuth->getAuth())
 {
   $openwebAuth->logout();
-  session_destroy();
+  unset($_SESSION['utilisateur']);
   $openwebAuth->start();
 }
 
@@ -84,7 +84,7 @@ if(!isset($_SESSION['utilisateur']))
   // Vérifie si l'utilisateur est autorisé à se connecter
   if(intval($user['uti_valide']) == 0)
   {
-    header('Location: logon.php?err=2');
+    echo 'Votre compte est désactivé';
     exit;
   }
 
