@@ -206,23 +206,37 @@ class DocInfos {
    */
   function check()
   {
+    $res = true;
+
     if(!$this->_checkDate($this->pubdate))
+    {
       $this->errors->push(OW_WRONG_DATE, 'error',
         array('node' => 'pubdate', 'value' => $this->pubdate));
+      $res = false;
+    }
 
     if(!$this->_checkDate($this->date))
+    {
       $this->errors->push(OW_WRONG_DATE, 'error',
         array('node' => 'date', 'value' => $this->date));
+      $res = false;
+    }
 
     if(empty($this->auteurs))
+    {
       $this->errors->push(OW_NO_AUTHOR, 'error');
+      $res = false;
+    }
 
     if(empty($this->title))
+    {
       $this->errors->push(OW_NO_TITLE, 'error');
+      $res = false;
+    }
 
-    $this->checkDir();
+    $res = $res && $this->checkDir();
 
-    return !$this->errors->hasErrors();
+    return $res;
   }
 
   /**
@@ -391,11 +405,8 @@ function utf8Chr($num)
     return chr(240 + ($num >> 18)).chr(128 + (($num >> 12) & 63)).
       chr(128 + (($num >> 6) & 63)).chr(128 + ($num & 63));
 
-/**
- * @todo pas de $this ici
- */
-  $this->errors->push(OW_WRONG_ENTITY, 'warning',
-    array('entity' => '&#'.strval($num).';'));
+  PEAR_ErrorStack::staticPush('OpenWeb::Backend::DocInfos', OW_WRONG_ENTITY,
+    'warning', array('entity' => '&#'.strval($num).';'));
 
   return '';
 }

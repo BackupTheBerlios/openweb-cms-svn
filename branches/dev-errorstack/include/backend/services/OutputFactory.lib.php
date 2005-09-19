@@ -76,6 +76,7 @@ function _output_xsl_generic_transform($filename, $filename_cible, $stylesheet, 
      nucléaires en jeu ici et rien ne garantit leur stabilité. Désolé pour
      le développement durable, c'est pas trop ça ici. */
   $xh = xslt_create();
+  xslt_set_error_handler($xh, '_output_xsl_error_handler');
   $result = xslt_process($xh, $filename, PATH_INCLUDE."xslt/".$stylesheet,
                $filename_cible, array(), $params);
 			   
@@ -87,6 +88,19 @@ function _output_xsl_generic_transform($filename, $filename_cible, $stylesheet, 
   }
   else
     return true;
+}
+
+/**
+ * Gestionnaire d'erreurs lors de la transformation XML
+ *
+ * Cette fonction intercepte les erreurs générées par le moteur XSLT et
+ * les ajoute à la pile PEAR::ErrorStack, qui se charge de leur remontée
+ * vers l'utilisateur.
+ * @access private
+ */
+function _output_xsl_error_handler($xh, $error_level, $error_code, $messages)
+{
+  PEAR_ErrorStack::staticPush('OpenWeb::Backend::OutputFactory', OW_XSL, 
 }
 
 /**

@@ -96,7 +96,7 @@ class DocumentType
     $this->min = array();
     $this->total_max = -1;
     $this->total_min = 0;
-    $this->errors = &PEAR_ErrorStack::singleton('OpenWeb_Backend_DocumentType');
+    $this->errors = &PEAR_ErrorStack::singleton('OpenWeb::Backend::DocumentType');
     if($typeid)
       $this->load($typeid);
   }
@@ -151,7 +151,7 @@ class DocumentType
 
     /* On vérifie que l'accroche est correcte */
     if($this->accroche && $docinfos->accroche == '')
-      $res[] = "accroche manquante";
+      $this->errors->push(OW_NO_ABSTRACT, 'error');
 
     /* Nombre total de classements dans $docinfos */
     $nb = 0;
@@ -160,27 +160,36 @@ class DocumentType
        qui se trouve dans $this->max ou $this->min. On calcule au passage
        également le nombre total d'entrées. */
     $compte = array();
-    foreach(array_unique(array_merge(array_keys($this->max), array_keys($this->min))) as $critere)
-      $nb += $compte[$critere] = isset($docinfos->classement[$critere]) ? count($docinfos->classement[$critere]) : 0;
+
+    foreach(array_unique(array_merge(array_keys($this->max),
+        array_keys($this->min))) as $critere)
+      $nb += $compte[$critere] = isset($docinfos->classement[$critere]) ?
+        count($docinfos->classement[$critere]) : 0;
 
     /* On vérifie que le nombre de classement pour chaque critère est dans
        le bon intervalle */
     foreach(array_keys($this->max) as $critere)
       /* Il n'y a pas de maximum si $this->max[$critere] est négatif */
       if($this->max[$critere] >= 0 && $compte[$critere] > $this->max[$critere])
-	$res[] = "trop d'entrées pour $critere (maximum ".$this->max[$critere].")";
+        $this->errors->push(OW_TOO_MANY_SUBJECTS, 'error',
+	  array('criterion' => $critere, 'limit' => $this->max[$critere]));
+
     foreach(array_keys($this->min) as $critere)
       if($compte[$critere] < $this->min[$critere])
-        $res[] = "pas assez d'entrées pour $critere (minimum ".$this->min[$critere].")";
+        $this->errors->push(OW_TOO_FEW_SUBJECTS, 'error',
+	  array('criterion' => $critere, 'limit' => $this->min[$critere]));
 
     /* Le nombre total de classements est-il compris entre les
        deux valeurs imposées ? */
     if($nb > $this->total_max)
-      $res[] = "trop d'entrées (maximum ".$this->total_max.")";
-    if($nb < $this->total_min)
-      $res[] = "pas assez d'entrées (minimum ".$this->total_min.")";
+      $this->errors->push(OW_TOO_MANY_SUBJECTS, 'error',
+        array('limit' => $this->total_max));
 
-    return count($res) == 0 ? true : $res;
+    if($nb < $this->total_min)
+      $this->errors->push(OW_TOO_FEW_SUBJECTS, 'error',
+        array('limit' => $this->total_min));
+
+    return !$this->errors->hasErrors();
   }
 }
 ?>
