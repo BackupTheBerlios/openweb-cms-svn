@@ -52,17 +52,19 @@ $user = $_SESSION['utilisateur'];
 <p><label>Prénom : <input type="text" id="uti_prenom" name="uti_prenom" value="<?php echo $user['uti_prenom'] ?>" /></label></p>
 <p><label>Nom : <input type="text" id="uti_nom" name="uti_nom" value="<?php echo $user['uti_nom'] ?>" /></label></p>
 <p><label>Langue : <input type="text" id="uti_lang" name="uti_lang" value="<?php echo $user['uti_lang'] ?>" /></label></p>
-<p><label>Jeu de caractère : <input type="text" id="uti_charset" name="uti_charset" value="<?php echo $user['uti_charset'] ?>" /></label></p>
+<!-- <p><label>Jeu de caractère : <input type="text" id="uti_charset" name="uti_charset" value="<?php echo $user['uti_charset'] ?>" /></label></p> -->
 </fieldset>
 <fieldset>
-<legend>L'inscription de votre blog sur l'aggrégateur d'openweb</legend>
-<p>Si vous voulez que des billets de votre blog apparaissent sur la page d'accueil d'openweb,
-indiquez ici l'url du fils rss. <strong>Attention !</strong> Le fils RSS que vous indiquez
-ne doit contenir que des billets sur les standards. Ce fils doit donc correspondre par exemple
-aux billets d'une catégorie "openweb" sur votre blog. Pour un blog sous Dotclear, ça sera par exemple :
-http://votresite.com/dotclear/rss.php?cat=Standards .</p>
-<p>Si vous ne voulez pas que vos billets apparaissent, laissez le champs vide.</p>
-<p><label>URL du fils RSS : <input type="text" size="40" id="uti_rss" name="uti_rss" value="<?php echo $user['uti_rss'] ?>" /></label></p>
+<legend>Inscription de votre blog sur l'agrégateur d'OpenWeb</legend>
+<p>Si vous voulez que des billets de votre blog apparaissent sur la page
+d'accueil d'OpenWeb, indiquez ici l'URL du fil RSS.
+<strong>Attention !</strong> Le fil RSS que vous indiquez ne doit contenir que
+des billets sur les standards. Ce fil doit donc correspondre par exemple aux
+billets d'une catégorie « OpenWeb » sur votre blog. Pour un blog sous Dotclear,
+ça sera par exemple :
+<code>http://votresite.com/dotclear/rss.php?cat=OpenWeb</code>.</p>
+<p>Si vous ne voulez pas que vos billets apparaissent, laissez le champ vide.</p>
+<p><label>URL du fil RSS : <input type="text" size="40" id="uti_rss" name="uti_rss" value="<?php echo $user['uti_rss'] ?>" /></label></p>
 </fieldset>
 
 <fieldset>
