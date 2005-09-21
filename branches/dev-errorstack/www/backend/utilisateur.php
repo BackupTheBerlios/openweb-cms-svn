@@ -49,7 +49,7 @@ $user = $_SESSION['utilisateur'];
 <p><label>Prénom : <input type="text" id="uti_prenom" name="uti_prenom" value="<?php echo $user['uti_prenom'] ?>" /></label></p>
 <p><label>Nom : <input type="text" id="uti_nom" name="uti_nom" value="<?php echo $user['uti_nom'] ?>" /></label></p>
 <p><label>Langue : <input type="text" id="uti_lang" name="uti_lang" value="<?php echo $user['uti_lang'] ?>" /></label></p>
-<p><label>Jeu de caractère : <input type="text" id="uti_charset" name="uti_charset" value="<?php echo $user['uti_charset'] ?>" /></label></p>
+<!-- <p><label>Jeu de caractère : <input type="text" id="uti_charset" name="uti_charset" value="<?php echo $user['uti_charset'] ?>" /></label></p> -->
 </fieldset>
 
 <fieldset>
