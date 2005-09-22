@@ -32,7 +32,7 @@ error_reporting(E_ALL);
 
 // Inclusion des bibliothèques de PEAR
 $pear_path = realpath(PATH_INC_BACKEND.'../../pear');
-ini_set('include_path', ini_get('include_path').':'.$pear_path);
+ini_set('include_path', $pear_path.':'.ini_get('include_path'));
   // nécessaire pour PEAR sur le serveur d'OpenWeb
 
 require_once "Auth/Auth.php";
