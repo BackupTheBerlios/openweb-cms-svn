@@ -36,6 +36,7 @@ INSERT INTO `prm_permsbackend` (`act_id`, `act_parent`, `act_name`, `uti_type`, 
 INSERT INTO `prm_permsbackend` (`act_id`, `act_parent`, `act_name`, `uti_type`, `act_libelle`, `act_param`) VALUES (12, 6, 'ACT_ADMIN_ADD', 'AW', 'Ajout d''un utilisateur', 'admin_adduser.php');
 INSERT INTO `prm_permsbackend` (`act_id`, `act_parent`, `act_name`, `uti_type`, `act_libelle`, `act_param`) VALUES (13, 6, 'ACT_ADMIN_DELETE', 'AW', 'Suppression d''un utilisateur', 'admin_deleteuser.php');
 INSERT INTO `prm_permsbackend` (`act_id`, `act_parent`, `act_name`, `uti_type`, `act_libelle`, `act_param`) VALUES (14, 6, 'ACT_ADMIN_EDIT', 'AW', 'Modification d''un utilisateur', 'admin_edituser.php');
+INSERT INTO `prm_permsbackend` (`act_id`, `act_parent`, `act_name`, `uti_type`, `act_libelle`, `act_param`) VALUES (15, 25, 'ACT_ACRO_EDIT', 'C', 'Edition des acronymes', 'acronymes_edit.php');
 INSERT INTO `prm_permsbackend` (`act_id`, `act_parent`, `act_name`, `uti_type`, `act_libelle`, `act_param`) VALUES (25, 4, 'ACT_ACRO_LISTE', 'RCA', 'Liste des acronymes', 'acronymes_liste.php');
 INSERT INTO `prm_permsbackend` (`act_id`, `act_parent`, `act_name`, `uti_type`, `act_libelle`, `act_param`) VALUES (16, 3, 'ACT_DOC_DETAILS', 'RCA', 'DÃ©tails d''un document', 'document_details.php');
 INSERT INTO `prm_permsbackend` (`act_id`, `act_parent`, `act_name`, `uti_type`, `act_libelle`, `act_param`) VALUES (21, 16, 'ACT_DOC_MAJ', 'RC', 'Mettre Ã  jour', '');

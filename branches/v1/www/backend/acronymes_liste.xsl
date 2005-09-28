@@ -16,8 +16,8 @@
 </xsl:template>
 
 <xsl:template match="word">
-	<dt><xsl:apply-templates select="@acronym"/><xsl:apply-templates select="@lang"/></dt>
-	<dd><xsl:apply-templates/></dd>
+	<dt><a href="acronymes_edit.php?acronym_id={@acronym}"><xsl:apply-templates select="@acronym"/><xsl:apply-templates select="@lang"/></a></dt>
+	<dd lang="{@lang}"><xsl:apply-templates/></dd>
 </xsl:template>
 
 <xsl:template match="@lang">

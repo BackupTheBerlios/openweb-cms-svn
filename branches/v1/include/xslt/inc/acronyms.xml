@@ -1,9 +1,8 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<!-- TODO utiliser la structure glossary de Docbook ? -->
+<?xml version="1.0" encoding="UTF-8"?>
 <acronyms>
   <word acronym="(X)HTML" lang="en">(eXtensible) HyperText Markup Language</word>
   
-  <word acronym="AFNOR" lang="fr">Association Française de NORmalisation</word>
+  <word acronym="AFNOR" lang="fr">Association FranÃ§aise de NORmalisation</word>
   
   <word acronym="ANSI" lang="en">American National Standard Institute</word>
   
@@ -25,11 +24,11 @@
   
   <word acronym="DTD" lang="en">Document Type Definition</word>
   
-  <word acronym="DUT" lang="fr">Diplôme Universitaire de Technologie</word>
+  <word acronym="DUT" lang="fr">DiplÃ´me Universitaire de Technologie</word>
   
   <word acronym="ECMA" lang="en">European Computer Manufacturer Association</word>
   
-  <word acronym="FAI" lang="fr">Fournisseur d'Acces à Internet</word>
+  <word acronym="FAI" lang="fr">Fournisseur d'Acces Ã  Internet</word>
   
   <word acronym="FAQ" lang="fr">Foire Aux Questions</word>
   
@@ -89,7 +88,7 @@
   
   <word acronym="SPICE" lang="en">Software Process Improvement and Capability Determination</word>
   
-  <word acronym="SSII" lang="en">Société de Service et d'Ingénierie Informatique</word>
+  <word acronym="SSII" lang="en">SociÃ©tÃ© de Service et d'IngÃ©nierie Informatique</word>
   
   <word acronym="SVG" lang="en">Scalable Vector Graphics</word>
   
